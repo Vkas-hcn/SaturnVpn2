@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/startFragment">
+
+    <!-- Main Fragment -->
+    <fragment
+        android:id="@+id/startFragment"
+        android:name="com.otters.lying.flat.eating.kiwifruit.saturnvpn.vvvvpp.ssstt.StartFragment"
+        android:label="Start Fragment"
+        tools:layout="@layout/fragment_start">
+        <action
+            android:id="@+id/action_startFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.otters.lying.flat.eating.kiwifruit.saturnvpn.vvvvpp.hhhee.HomeFragment"
+        android:label="Home Fragment"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_moreFragment"
+            app:destination="@id/moreFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_endFragment"
+            app:destination="@id/endFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_proxyFragment"
+            app:destination="@id/proxyFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_ppFragment"
+            app:destination="@id/ppFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/moreFragment"
+        android:name="com.otters.lying.flat.eating.kiwifruit.saturnvpn.vvvvpp.llltt.MoreFragment"
+        android:label="More Fragment"
+        tools:layout="@layout/fragment_more">
+
+        <action
+            android:id="@+id/action_moreFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/endFragment"
+        android:name="com.otters.lying.flat.eating.kiwifruit.saturnvpn.vvvvpp.rrrll.EndFragment"
+        android:label="End Fragment"
+        tools:layout="@layout/fragment_end">
+
+        <action
+            android:id="@+id/action_endFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/proxyFragment"
+        android:name="com.otters.lying.flat.eating.kiwifruit.saturnvpn.vvvvpp.pppyy.ProxyFragment"
+        android:label="ProxyFragment"
+        tools:layout="@layout/fragment_proxy" >
+        <action
+            android:id="@+id/action_proxyFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/ppFragment"
+        android:name="com.otters.lying.flat.eating.kiwifruit.saturnvpn.vvvvpp.wwwww.PpFragment"
+        android:label="PpFragment"
+        tools:layout="@layout/fragment_pp" >
+        <action
+            android:id="@+id/action_ppFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+</navigation>
