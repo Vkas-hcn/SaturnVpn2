@@ -54,6 +54,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
     private lateinit var requestPermissionForResultVPN: ActivityResultLauncher<Intent?>
 
     var showAd = false
+    var jumpLaMore = false
     override val layoutId: Int
         get() = R.layout.fragment_home
 
@@ -62,6 +63,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
 
 
     override fun setupViews() {
+        jumpLaMore = false
         AAApp.adTbaActivityName = this.javaClass.simpleName
         requestPermissionForResultVPN =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -71,7 +73,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
         DataStore.publicStore.registerChangeListener(this)
         Log.e("TAG", "home ----init-----: ")
         viewModel.initializeServerData(binding) {
-            activity?.let { clickVpnConnect(it) }
+            activity?.let {
+                jumpLaMore=true
+                Log.e("More", "setupViews: 1", )
+                clickVpnConnect(it)
+            }
         }
         binding.imgMenu.setOnClickListener {
             clickDisConnect(nextFun = {
@@ -159,6 +165,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
         jobConnect?.cancel()
         jobConnect = null
         if (AAApp.vvState) {
+            Log.e("More", "setSsVpnState: =2====2", )
             setTypeService(2)
         } else {
             Core.stopService()
@@ -251,6 +258,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
         } else {
             "0"
         }
+        Log.e("More", "setupViews: 2")
         jobStart = activity?.lifecycleScope?.launch {
             setTypeService(1)
             delay(2000)
@@ -288,18 +296,20 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
     }
 
     override fun onServiceConnected(service: IShadowsocksService) {
-        Log.e("TAG", "onServiceConnected: ${service.state}")
-        val state = BaseService.State.values()[service.state]
-        Log.e("TAG", "ss-初始化: ${state.name}")
-        if (state.name == "Connected") {
-            binding.linSpeed.isVisible = true
-            setSsVpnState(true)
+        if(!jumpLaMore) {
+            Log.e("TAG", "onServiceConnected: ${service.state}")
+            val state = BaseService.State.values()[service.state]
+            Log.e("TAG", "ss-初始化: ${state.name}")
+            if (state.name == "Connected") {
+                binding.linSpeed.isVisible = true
+                setSsVpnState(true)
+            }
+            if (state.name == "Stopped") {
+                binding.linSpeed.isVisible = false
+                setSsVpnState(false)
+            }
+            setGuideView(!AAApp.vvState)
         }
-        if (state.name == "Stopped") {
-            binding.linSpeed.isVisible = false
-            setSsVpnState(false)
-        }
-        setGuideView(!AAApp.vvState)
     }
 
 
@@ -325,6 +335,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
     private fun setSsVpnState(canStop: Boolean) {
         AAApp.vvState = canStop
         if (AAApp.vvState) {
+            Log.e("More", "setSsVpnState: =2====1", )
             setTypeService(2)
         } else {
             setTypeService(0)
@@ -343,6 +354,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
     private fun setTypeService(
         stateInt: Int
     ) {
+        Log.e("More", "setupViews: =====${stateInt}")
         if (stateInt == 0) {
             AAApp.globalTimer?.reset()
             binding.atvConnect.text = "Disconnected"
@@ -449,6 +461,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
 
     private fun connectFinish() {
         setGuideView(false)
+        Log.e("More", "setSsVpnState: =2====3", )
         setTypeService(2)
         pageToRePage()
     }
@@ -525,7 +538,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
             delay(300)
             val state = lifecycle.currentState == Lifecycle.State.RESUMED
             if (state) {
-                TTTDDUtils.postPointData("moo2")
+                postPointData("moo2")
             }
         }
     }

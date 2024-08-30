@@ -347,7 +347,7 @@ class AdManager(private val application: Application) {
     }
 
     fun getAdDataState(adType: String): Boolean {
-        return adCache[adType] != null
+        return adCache.containsKey(adType)
     }
 
     private fun canLoadAd(): Boolean {
