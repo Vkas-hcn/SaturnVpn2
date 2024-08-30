@@ -30,4 +30,5 @@ data class AdEasy(
 data class AdLjBean(
     val soon: String,
     val geez: String,
+    val mosd:String,
 )

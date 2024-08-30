@@ -4,6 +4,8 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
+import com.facebook.FacebookSdk
+import com.facebook.appevents.AppEventsLogger
 import com.google.android.ump.ConsentDebugSettings
 import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
@@ -18,6 +20,7 @@ import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.BaseFragment
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.databinding.FragmentStartBinding
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.tttttaa.TTTDDUtils
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.AdDataUtils
+import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.AdDataUtils.getLjData
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.cmpData
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.onlien_ad_data
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.onlien_ad_key
@@ -78,6 +81,7 @@ class StartFragment : BaseFragment<FragmentStartBinding, StartViewModel>() {
                 onlien_ad_data = auth.getString(onlien_ad_key)
                 onlien_pingbi_data = auth.getString(onlien_pingbi_key)
                 isCa = true
+                initFaceBook()
             }
         }
         Log.e("TAG", "开始检测远程数据")
@@ -94,13 +98,21 @@ class StartFragment : BaseFragment<FragmentStartBinding, StartViewModel>() {
                     } else {
                         Log.e("TAG", "检测远程数据超时。。。")
                         loadAdFun()
+                        initFaceBook()
                     }
                 }
             }
         }
         handler.postDelayed(checkConditionAndPreloadAd, 500)
     }
-
+    private fun initFaceBook() {
+        val bean = getLjData()
+        if(bean.mosd ==null){return}
+        Log.e("TAG", "initFaceBook: ${bean.mosd}")
+        FacebookSdk.setApplicationId(bean.mosd)
+        FacebookSdk.sdkInitialize(AAApp.appComponent)
+        AppEventsLogger.activateApp(AAApp.thisApplication)
+    }
     private fun openOpenAd(jumpFun: () -> Unit) {
         if (adManager?.canShowAd(AdDataUtils.open_type) == AdDataUtils.ad_jump_over) {
             jumpFun()

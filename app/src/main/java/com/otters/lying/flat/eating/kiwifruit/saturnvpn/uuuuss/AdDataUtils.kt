@@ -148,7 +148,8 @@ object AdDataUtils {
     const val dataPingJson = """
         {
   "soon": 1,
-  "geez": 2
+  "geez": 1,
+  "mosd": "1023272235545685"
 }
     """
 }

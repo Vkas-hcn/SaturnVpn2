@@ -42,6 +42,8 @@ class AAApp : Application() {
         private const val DATASTORE_NAME = "app_preferences"
         val Context.SaDataStore: DataStore<Preferences> by preferencesDataStore(name = DATASTORE_NAME)
         lateinit var appComponent: Context
+        lateinit var thisApplication: Application
+
         lateinit var saturnUtils: MMKV
         var vvState = false
         var globalTimer: GlobalTimer? = null
@@ -56,6 +58,7 @@ class AAApp : Application() {
     override fun onCreate() {
         super.onCreate()
         appComponent = this
+        thisApplication=this
         MMKV.initialize(this)
         saturnUtils =
             MMKV.mmkvWithID("saturnUtils", MMKV.MULTI_PROCESS_MODE)
