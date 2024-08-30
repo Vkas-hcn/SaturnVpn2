@@ -58,11 +58,11 @@ class AdManager(private val application: Application) {
             Log.d("AdManager", "AdMob initialized")
         }
         isAppOpenSameDayBa()
-        val testDeviceIds = Arrays.asList("76A730E9AE68BD60E99DF7B83D65C4B4")
-        val configuration = RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
-        MobileAds.setRequestConfiguration(configuration)
-        val isTest = AdRequest.Builder().build()
-        Log.e("TAG", "设备已正确添加为测试设备: ${isTest.isTestDevice(application)}", )
+//        val testDeviceIds = Arrays.asList("76A730E9AE68BD60E99DF7B83D65C4B4")
+//        val configuration = RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
+//        MobileAds.setRequestConfiguration(configuration)
+//        val isTest = AdRequest.Builder().build()
+//        Log.e("TAG", "设备已正确添加为测试设备: ${isTest.isTestDevice(application)}", )
     }
 
     private fun canRequestAd(adType: String): Boolean {
@@ -524,8 +524,8 @@ class AdManager(private val application: Application) {
                         adType
                     )
                 }
+                loadAd(AdDataUtils.home_type)
             }
-            loadAd(AdDataUtils.home_type)
         } else {
             ad.setOnPaidEventListener { adValue ->
                 Log.e("TAG", "原生广告 -${adType}，开始上报: ")
@@ -537,8 +537,8 @@ class AdManager(private val application: Application) {
                         adType
                     )
                 }
+                loadAd(AdDataUtils.result_type)
             }
-            loadAd(AdDataUtils.result_type)
         }
     }
 

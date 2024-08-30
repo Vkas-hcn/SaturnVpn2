@@ -35,6 +35,8 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import timber.log.Timber.Forest
 import timber.log.Timber.Forest.tag
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.math.BigDecimal
 import java.util.Currency
 import java.util.Locale
@@ -295,7 +297,7 @@ object TTTDDUtils {
     }
 
 
-    fun postPointData(name: String, key: String?=null, keyValue: Any??=null, key2: String??=null, keyValue2: Any??=null) {
+    fun postPointData(name: String, key: String?=null, keyValue: Any?=null, key2: String?=null, keyValue2: Any?=null) {
         Intrinsics.checkNotNullParameter(name, "name")
         val pointJson = if (key != null && keyValue != null) {
             getTbaTimeDataJson(name, key, keyValue, key2, keyValue2)
@@ -318,22 +320,45 @@ object TTTDDUtils {
         }
     }
 
-    fun isNetworkAvailable(): Boolean {
-        val connectivityManager = appComponent.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val network = connectivityManager.activeNetwork ?: return false
-            val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
-            return when {
-                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-                else -> false
-            }
+//    fun isNetworkAvailable(): Boolean {
+//        val connectivityManager = appComponent.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            val network = connectivityManager.activeNetwork ?: return false
+//            val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+//            return when {
+//                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+//                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+//                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+//                else -> false
+//            }
+//        } else {
+//            @Suppress("DEPRECATION")
+//            val networkInfo = connectivityManager.activeNetworkInfo ?: return false
+//            @Suppress("DEPRECATION")
+//            return networkInfo.isConnected
+//        }
+//    }
+
+    fun pingIPAddress(ip: String): String? {
+        val command = if (System.getProperty("os.name").startsWith("Windows")) {
+            "ping -n 1 $ip"
         } else {
-            @Suppress("DEPRECATION")
-            val networkInfo = connectivityManager.activeNetworkInfo ?: return false
-            @Suppress("DEPRECATION")
-            return networkInfo.isConnected
+            "ping -c 1 $ip"
+        }
+
+        return try {
+            val process = ProcessBuilder(*command.split(" ").toTypedArray()).start()
+            val reader = BufferedReader(InputStreamReader(process.inputStream))
+            val output = reader.use { it.readText() }
+            val pingTime = if (System.getProperty("os.name").startsWith("Windows")) {
+                """时间=(\d+)ms""".toRegex().find(output)?.groups?.get(1)?.value
+            } else {
+                """time=(\d+) ms""".toRegex().find(output)?.groups?.get(1)?.value
+            }
+
+            pingTime
+        } catch (e: Exception) {
+            null
         }
     }
 
@@ -342,11 +367,11 @@ object TTTDDUtils {
 
     fun moo10() {
         CoroutineScope(Dispatchers.IO).launch {
-            val netState = isNetworkAvailable()
-            val isHaveData = if (netState) {
-                "1"
-            } else {
+            val pingValue = pingIPAddress(appComponent.vpn_ip)
+            val isHaveData = if (pingValue==null) {
                 "2"
+            } else {
+                "1"
             }
             postPointData(
                 "moo10",
