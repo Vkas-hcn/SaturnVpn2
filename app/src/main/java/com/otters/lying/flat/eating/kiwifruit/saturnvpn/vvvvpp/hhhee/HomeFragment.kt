@@ -1,20 +1,14 @@
 package com.otters.lying.flat.eating.kiwifruit.saturnvpn.vvvvpp.hhhee
 
-import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.net.VpnService
-import android.os.Build
-import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -26,8 +20,6 @@ import com.github.shadowsocks.bg.BaseService
 import com.github.shadowsocks.preference.DataStore
 import com.github.shadowsocks.preference.OnPreferenceDataStoreChangeListener
 import com.github.shadowsocks.utils.Key
-import com.github.shadowsocks.utils.StartService
-import com.google.android.material.snackbar.Snackbar
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.R
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.AAApp
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.BaseFragment
@@ -70,6 +62,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
 
 
     override fun setupViews() {
+        AAApp.adTbaActivityName = this.javaClass.simpleName
         requestPermissionForResultVPN =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 requestPermissionForResult(it)

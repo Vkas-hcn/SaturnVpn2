@@ -30,6 +30,7 @@ class MoreFragment : BaseFragment<FragmentMoreBinding, MoreViewModel>(){
     private var moreList:MutableList<SX>?=null
     private var moreAdapter: MoreListAdapter?=null
     override fun setupViews() {
+        AAApp.adTbaActivityName = this.javaClass.simpleName
         binding.imgBack.setOnClickListener {
             customizeReturnKey()
         }

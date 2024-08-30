@@ -1,7 +1,6 @@
 package com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss
 
 import android.util.Base64
-import android.util.Log
 import com.google.gson.Gson
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.AAApp
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.AdLjBean
@@ -53,7 +52,7 @@ object AdDataUtils {
                 AAApp.appComponent.blackData != "squalid"
             }
         }
-        if (adBlack && AAApp.appComponent.point1 != "1") {
+        if (!adBlack && AAApp.appComponent.point1 != "1") {
             TTTDDUtils.postPointData("moo1")
             AAApp.appComponent.point1 = "1"
         }
@@ -149,7 +148,7 @@ object AdDataUtils {
     const val dataPingJson = """
         {
   "soon": 1,
-  "geez": 1
+  "geez": 2
 }
     """
 }

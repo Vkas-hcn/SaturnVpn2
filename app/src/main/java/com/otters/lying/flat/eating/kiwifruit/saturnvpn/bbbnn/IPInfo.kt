@@ -1,7 +1,6 @@
 package com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn
 
 import android.content.Context
-import android.os.Build
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.AAApp
@@ -9,9 +8,6 @@ import com.otters.lying.flat.eating.kiwifruit.saturnvpn.tttttaa.TTTDDUtils
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.ben_ip
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.code_con
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.ip_con
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -123,19 +119,19 @@ fun shouldIntercept(context: Context): Boolean {
 }
 
 fun showDueDialog(context: Context): Boolean {
-//    if (shouldIntercept(context)) {
-//        TTTDDUtils.postPointData("moo3","seru",context.ben_ip)
-//        AlertDialog.Builder(context).apply {
-//            setTitle("WARN")
-//            setMessage("Due to the policy reason , this service is not available in your country")
-//            setPositiveButton("OK") { dialog, _ ->
-//                dialog.dismiss()
-//                exitProcess(0)
-//            }
-//            setCancelable(false)
-//            show()
-//        }
-//        return true
-//    }
+    if (shouldIntercept(context)) {
+        TTTDDUtils.postPointData("moo3","seru",context.ip_con)
+        AlertDialog.Builder(context).apply {
+            setTitle("WARN")
+            setMessage("Due to the policy reason , this service is not available in your country")
+            setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
+                exitProcess(0)
+            }
+            setCancelable(false)
+            show()
+        }
+        return true
+    }
     return false
 }

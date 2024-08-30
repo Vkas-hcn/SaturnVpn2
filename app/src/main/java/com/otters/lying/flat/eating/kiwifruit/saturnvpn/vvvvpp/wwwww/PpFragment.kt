@@ -4,6 +4,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.R
+import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.AAApp
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.BaseFragment
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.databinding.FragmentEndBinding
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.databinding.FragmentHomeBinding
@@ -23,6 +24,7 @@ class PpFragment : BaseFragment<FragmentPpBinding, PpViewModel>(){
 
 
     override fun setupViews() {
+        AAApp.adTbaActivityName = this.javaClass.simpleName
         binding.iconBack.setOnClickListener {
             customizeReturnKey()
         }

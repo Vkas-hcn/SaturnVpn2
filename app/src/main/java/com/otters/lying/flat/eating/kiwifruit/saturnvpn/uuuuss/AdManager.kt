@@ -16,6 +16,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.nativead.NativeAd
@@ -36,9 +37,9 @@ import com.otters.lying.flat.eating.kiwifruit.saturnvpn.vvvvpp.rrrll.EndFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Calendar
 import java.util.Date
 import java.text.SimpleDateFormat
+import java.util.Arrays
 
 class AdManager(private val application: Application) {
     private val adCache = mutableMapOf<String, Any>()
@@ -57,6 +58,11 @@ class AdManager(private val application: Application) {
             Log.d("AdManager", "AdMob initialized")
         }
         isAppOpenSameDayBa()
+        val testDeviceIds = Arrays.asList("76A730E9AE68BD60E99DF7B83D65C4B4")
+        val configuration = RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
+        MobileAds.setRequestConfiguration(configuration)
+        val isTest = AdRequest.Builder().build()
+        Log.e("TAG", "设备已正确添加为测试设备: ${isTest.isTestDevice(application)}", )
     }
 
     private fun canRequestAd(adType: String): Boolean {

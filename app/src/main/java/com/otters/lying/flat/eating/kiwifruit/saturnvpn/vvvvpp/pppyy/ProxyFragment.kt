@@ -5,17 +5,13 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.R
+import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.AAApp
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.BaseFragment
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.AppInfo
-import com.otters.lying.flat.eating.kiwifruit.saturnvpn.databinding.FragmentEndBinding
-import com.otters.lying.flat.eating.kiwifruit.saturnvpn.databinding.FragmentHomeBinding
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.databinding.FragmentProxyBinding
-import com.otters.lying.flat.eating.kiwifruit.saturnvpn.databinding.FragmentStartBinding
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.tttttaa.TTTDDUtils
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.CenterUtils.getInstalledApps
-import java.lang.System.exit
 import java.util.Locale
-import kotlin.system.exitProcess
 
 class ProxyFragment : BaseFragment<FragmentProxyBinding, ProxyViewModel>(){
     override val layoutId: Int
@@ -27,6 +23,7 @@ class ProxyFragment : BaseFragment<FragmentProxyBinding, ProxyViewModel>(){
     private var appList:MutableList<AppInfo>?=null
     private var appAdapter:AppListAdapter?=null
     override fun setupViews() {
+        AAApp.adTbaActivityName = this.javaClass.simpleName
         binding.imgBack.setOnClickListener {
             customizeReturnKey()
         }

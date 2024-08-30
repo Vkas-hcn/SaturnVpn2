@@ -12,7 +12,6 @@ import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.parseSX
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.databinding.FragmentEndBinding
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.tttttaa.TTTDDUtils
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.AdDataUtils
-import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.CenterUtils.getSaturnImage
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.click_now_vpn
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.connect_now_vpn
@@ -33,6 +32,7 @@ class EndFragment : BaseFragment<FragmentEndBinding, EndViewModel>() {
     var jobResult: Job? = null
 
     override fun setupViews() {
+        AAApp.adTbaActivityName = this.javaClass.simpleName
         adManager?.loadAd(AdDataUtils.end_type)
         showTimeLi()
         binding.iconBack.setOnClickListener {

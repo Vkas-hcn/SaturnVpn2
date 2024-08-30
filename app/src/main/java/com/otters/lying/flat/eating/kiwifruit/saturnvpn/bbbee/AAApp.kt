@@ -1,6 +1,5 @@
 package com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
 import android.app.Application
@@ -108,9 +107,6 @@ class AAApp : Application() {
                     (activity as? MainActivity)?.showStartFragment()
                     isCanHots = false
                 }
-                if (activity !is AdActivity) {
-                    adTbaActivityName = activity.javaClass.simpleName
-                }
             }
 
             override fun onActivityPaused(activity: Activity) {
@@ -148,7 +144,8 @@ class AAApp : Application() {
                     when (p0) {
                         InstallReferrerClient.InstallReferrerResponse.OK -> {
                             referrerClient.installReferrer?.run {
-                                if(appComponent.install_up_state != "0"){
+                                if(appComponent.install_up_state != "1"){
+                                    Log.e("TAG", "onInstallReferrerSetupFinished: ", )
                                     TTTDDUtils.postInstallJson(this)
                                 }
                             }

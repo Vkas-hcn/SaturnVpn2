@@ -3,7 +3,6 @@ package com.otters.lying.flat.eating.kiwifruit.saturnvpn.vvvvpp.ssstt
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.google.android.ump.ConsentDebugSettings
 import com.google.android.ump.ConsentInformation
@@ -25,7 +24,6 @@ import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.onlien_
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.onlien_pingbi_data
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.onlien_pingbi_key
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.NetUtils
-import io.reactivex.rxjava3.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -43,6 +41,7 @@ class StartFragment : BaseFragment<FragmentStartBinding, StartViewModel>() {
     private var jobStart: Job? = null
 
     override fun setupViews() {
+        AAApp.adTbaActivityName = this.javaClass.simpleName
         lifecycleScope.launch(Dispatchers.IO) {
             NetUtils.getVpnNetData()
             TTTDDUtils.postSessionData()
@@ -177,7 +176,6 @@ class StartFragment : BaseFragment<FragmentStartBinding, StartViewModel>() {
 
     fun ffffffDDD() {
         openOpenAd {
-//            viewModel.liveHomeData.postValue(true)
             navigateTo(R.id.action_startFragment_to_homeFragment)
         }
     }
@@ -201,7 +199,7 @@ class StartFragment : BaseFragment<FragmentStartBinding, StartViewModel>() {
         val debugSettings =
             ConsentDebugSettings.Builder(requireActivity())
                 .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
-                .addTestDeviceHashedId("BCD99A19DFC84C1B71AF2A884D73059C")
+                .addTestDeviceHashedId("D78A835D7D887BF1B02B84F27479EC60")
                 .build()
         val params = ConsentRequestParameters
             .Builder()
