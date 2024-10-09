@@ -3,6 +3,7 @@ package com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss
 import android.content.pm.PackageManager
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.R
@@ -54,17 +55,28 @@ object CenterUtils {
         val pm: PackageManager = activity.packageManager
         val apps = pm.getInstalledApplications(PackageManager.GET_META_DATA)
         val appInfoList = mutableListOf<AppInfo>()
+
         for (app in apps) {
             if (pm.getLaunchIntentForPackage(app.packageName) != null && app.packageName != activity.packageName) {
                 val name = pm.getApplicationLabel(app).toString()
-                val icon = pm.getApplicationIcon(app.packageName)
                 val packageName = app.packageName
+
+                // Try to get the icon, but catch any exceptions that might occur
+                val icon = try {
+                    pm.getApplicationIcon(app.packageName)
+                } catch (e: Exception) {
+                    // Handle icon loading failure, use a default icon
+                    ContextCompat.getDrawable(activity,R.drawable.icon_fast) ?: throw e
+                }
+
                 appInfoList.add(AppInfo(name, packageName, icon, false))
             }
         }
+
         appInfoList.sortBy { it.name.toLowerCase() }
         return appInfoList
     }
+
 
     fun saveAppStateList(appPack: String) {
         if (AAApp.appComponent.app_pack_info == null || AAApp.appComponent.app_pack_info?.isBlank() == true) {

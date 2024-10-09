@@ -84,6 +84,7 @@ class StartFragment : BaseFragment<FragmentStartBinding, StartViewModel>() {
                 initFaceBook()
             }
         }
+        initFaceBook()
         Log.e("TAG", "开始检测远程数据")
 
         val checkConditionAndPreloadAd = object : Runnable {
@@ -107,13 +108,14 @@ class StartFragment : BaseFragment<FragmentStartBinding, StartViewModel>() {
     }
     private fun initFaceBook() {
         val bean = getLjData()
-        if(bean.mosd ==null){return}
+        if(bean.mosd.isNullOrEmpty()){return}
         Log.e("TAG", "initFaceBook: ${bean.mosd}")
         FacebookSdk.setApplicationId(bean.mosd)
         FacebookSdk.sdkInitialize(AAApp.appComponent)
         AppEventsLogger.activateApp(AAApp.thisApplication)
     }
-    private fun openOpenAd(jumpFun: () -> Unit) {
+
+    private fun openOpenAd2(jumpFun: () -> Unit) {
         if (adManager?.canShowAd(AdDataUtils.open_type) == AdDataUtils.ad_jump_over) {
             jumpFun()
             return
@@ -148,47 +150,55 @@ class StartFragment : BaseFragment<FragmentStartBinding, StartViewModel>() {
         }
         handler.postDelayed(checkConditionAndPreloadAd, 500)
     }
-
-    private fun openOpenAd2(jumpFun: () -> Unit) {
+    private fun openOpenAd(jumpFun: () -> Unit) {
         if (adManager?.canShowAd(AdDataUtils.open_type) == AdDataUtils.ad_jump_over) {
             jumpFun()
             return
         }
-        jobStart?.cancel()
-        jobStart = null
-        jobStart = activity?.lifecycleScope?.launch(Dispatchers.Main) {
-            val startTime = System.currentTimeMillis()
-            var elapsedTime: Long
-            try {
-                while (isActive) {
-                    elapsedTime = System.currentTimeMillis() - startTime
-                    if (elapsedTime >= 10000L) {
-                        Log.e("TAG", "连接超时")
-                        jumpFun()
-                        break
-                    }
-
-                    if (adManager?.canShowAd(AdDataUtils.open_type) == AdDataUtils.ad_show) {
-                        adManager?.showAd(
-                            AdDataUtils.open_type,
-                            requireActivity(),
-                            this@StartFragment
-                        ) {
+        var adShown = false
+        var attemptCount = 0
+        val handler = Handler(Looper.getMainLooper())
+        val checkConditionAndPreloadAd = object : Runnable {
+            override fun run() {
+                Log.e("TAG", "等待OPEN广告中。。。${adShown} ")
+                if (adShown || !isAdded) return // 确保 Fragment 已附加
+                attemptCount++
+                if (attemptCount < 20) {
+                    handler.postDelayed(this, 500)
+                } else {
+                    adShown = true
+                    Log.e("TAG", "OPEN广告超时。。。 ")
+                    jumpFun()
+                }
+                if (adManager?.canShowAd(AdDataUtils.open_type) == AdDataUtils.ad_show) {
+                    adShown = true
+                    Log.e("TAG", "准备OPEN广告中。。。${adShown} ")
+                    activity?.let { activity ->
+                        adManager?.showAd(AdDataUtils.open_type, activity, this@StartFragment) {
                             jumpFun()
                         }
-                        break
                     }
-                    delay(500L)
                 }
-            } catch (e: Exception) {
             }
         }
+        handler.postDelayed(checkConditionAndPreloadAd, 500)
     }
 
 
+    private var isNavigated = false
     fun ffffffDDD() {
-        openOpenAd {
-            navigateTo(R.id.action_startFragment_to_homeFragment)
+        if (!isNavigated) {
+            isNavigated = true
+            openOpenAd {
+                if (isAdded) {
+                    try {
+                        navigateTo(R.id.action_startFragment_to_homeFragment)
+                    } catch (e: Exception) {
+                        Log.e("Navigation Error", "Error navigating to homeFragment", e)
+                    }
+                }
+                isNavigated = false
+            }
         }
     }
 
