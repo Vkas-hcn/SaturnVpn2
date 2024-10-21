@@ -33,7 +33,6 @@ class EndFragment : BaseFragment<FragmentEndBinding, EndViewModel>() {
 
     override fun setupViews() {
         AAApp.adTbaActivityName = this.javaClass.simpleName
-        adManager?.loadAd(AdDataUtils.end_type)
         showTimeLi()
         binding.iconBack.setOnClickListener {
             backFun()
@@ -46,7 +45,7 @@ class EndFragment : BaseFragment<FragmentEndBinding, EndViewModel>() {
             binding.imageView.setImageResource(R.drawable.icon_start)
         }
         showVpnInfo()
-        showHomeAd()
+        showEndAd()
         TTTDDUtils.moo12()
     }
 
@@ -88,15 +87,32 @@ class EndFragment : BaseFragment<FragmentEndBinding, EndViewModel>() {
                 nextFun()
                 return@launch
             }
-            if (adManager?.canShowAd(AdDataUtils.end_type) == AdDataUtils.ad_show) {
-                binding.conLoadAd.isVisible = true
-                delay(1000)
-                binding.conLoadAd.isVisible = false
-                adManager?.showAd(AdDataUtils.end_type, requireActivity(), this@EndFragment) {
-                    nextFun()
+            adManager?.loadAd(AdDataUtils.end_type)
+            val startTime = System.currentTimeMillis()
+            var elapsedTime: Long
+            binding.conLoadAd.isVisible = true
+            try {
+                while (isActive) {
+                    elapsedTime = System.currentTimeMillis() - startTime
+                    if (elapsedTime >= 4000L) {
+                        Log.e("TAG", "连接超时")
+                        nextFun()
+                        binding.conLoadAd.isVisible = false
+                        break
+                    }
+
+                    if (adManager?.canShowAd(AdDataUtils.end_type) == AdDataUtils.ad_show) {
+                        adManager?.showAd(AdDataUtils.end_type, requireActivity(), this@EndFragment) {
+                            nextFun()
+                            binding.conLoadAd.isVisible = false
+                        }
+                        break
+                    }
+                    delay(500L)
                 }
-            } else {
+            } catch (e: Exception) {
                 nextFun()
+                binding.conLoadAd.isVisible = false
             }
         }
     }
@@ -115,13 +131,14 @@ class EndFragment : BaseFragment<FragmentEndBinding, EndViewModel>() {
         }
     }
 
-    private fun showHomeAd() {
+    private fun showEndAd() {
         jobResult?.cancel()
         jobResult = null
         if (adManager?.canShowAd(AdDataUtils.result_type) == AdDataUtils.ad_jump_over) {
             binding.imgOc.isVisible = true
             binding.adLayoutAdmob.isVisible = false
         }
+        adManager?.loadAd(AdDataUtils.end_type)
         jobResult = lifecycleScope.launch {
             delay(300)
             while (isActive) {

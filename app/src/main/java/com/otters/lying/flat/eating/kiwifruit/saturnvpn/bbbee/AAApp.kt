@@ -59,6 +59,7 @@ class AAApp : Application() {
         super.onCreate()
         appComponent = this
         thisApplication=this
+        Log.e("TAG", "onCreate: Apppppppppp-app", )
         MMKV.initialize(this)
         saturnUtils =
             MMKV.mmkvWithID("saturnUtils", MMKV.MULTI_PROCESS_MODE)
@@ -120,7 +121,6 @@ class AAApp : Application() {
                 if (activity is AdActivity) {
                     return
                 }
-
                 isInBackground = true
                 isCanHots = false
                 CoroutineScope(Dispatchers.Main).launch {

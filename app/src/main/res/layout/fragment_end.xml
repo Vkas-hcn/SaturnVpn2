@@ -207,7 +207,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
                     android:textColor="@color/black"
-                    android:text="Ads will show soon..."/>
+                    android:text="Loading..."/>
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

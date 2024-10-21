@@ -24,19 +24,11 @@ object MkUtils {
     }
 
     fun brand(builder: VpnService.Builder, myPackageName: String) {
-        if (getFlowData()) {
-            (listOf(myPackageName) + listGmsPackages() + getAppList())
-                .iterator()
-                .forEachRemaining {
-                    runCatching { builder.addDisallowedApplication(it) }
-                }
-        } else {
-            (getAppList())
-                .iterator()
-                .forEachRemaining {
-                    runCatching { builder.addDisallowedApplication(it) }
-                }
-        }
+        (getAppList())
+            .iterator()
+            .forEachRemaining {
+                runCatching { builder.addDisallowedApplication(it) }
+            }
     }
 
     private fun listGmsPackages(): List<String> {

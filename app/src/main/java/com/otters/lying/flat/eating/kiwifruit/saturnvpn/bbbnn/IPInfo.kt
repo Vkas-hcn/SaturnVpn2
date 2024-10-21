@@ -74,7 +74,9 @@ fun getIPInfo() {
         )
         AAApp.appComponent.ip_con = jsonObject.getString("country")
         AAApp.appComponent.code_con = jsonObject.getString("cc")
-        AAApp.appComponent.ben_ip = jsonObject.getString("ip")
+        if (!AAApp.vvState) {
+            AAApp.appComponent.ben_ip = jsonObject.getString("ip")
+        }
 
     } else {
         val secondaryResponse = fetchIPInfo(secondaryUrl)
@@ -95,7 +97,9 @@ fun getIPInfo() {
             )
             AAApp.appComponent.ip_con = jsonObject.getString("country_long")
             AAApp.appComponent.code_con = jsonObject.getString("country_short")
-            AAApp.appComponent.ben_ip = jsonObject.getString("ip")
+            if (!AAApp.vvState) {
+                AAApp.appComponent.ben_ip = jsonObject.getString("ip")
+            }
         }
     }
 }

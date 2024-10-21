@@ -25,6 +25,16 @@ object DataUtils {
     const val onlien_ad_key = "clap"
     const val onlien_pingbi_key = "evil"
 
+    var openTypeIp = ""
+    var homeTypeIp = ""
+    var resultTypeIp = ""
+    var contTypeIp = ""
+    var listTypeIp = ""
+    var endTypeIp = ""
+
+    var nowLoadIpData = ""
+    var nowLoadCityData = ""
+
     var Context.point1: String
         get() = runBlocking {
             SaDataStore.data

@@ -1,6 +1,7 @@
 package com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss
 
 import android.util.Base64
+import android.util.Log
 import com.google.gson.Gson
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.AAApp
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.AdLjBean
@@ -29,13 +30,14 @@ object AdDataUtils {
 
     fun getLjData(): AdLjBean {
         val adRefBean = onlien_pingbi_data
-        runCatching {
-            if (adRefBean?.isNotEmpty() == true) {
-                return Gson().fromJson(base64Decode(adRefBean), AdLjBean::class.java)
+        return runCatching {
+            if (adRefBean.isNotEmpty()) {
+                Gson().fromJson(base64Decode(adRefBean), AdLjBean::class.java)
             } else {
-                return Gson().fromJson(dataPingJson, AdLjBean::class.java)
+                Gson().fromJson(dataPingJson, AdLjBean::class.java)
             }
-        }.getOrNull() ?: return Gson().fromJson(dataPingJson, AdLjBean::class.java)
+        }.onFailure { exception ->
+        }.getOrNull() ?: Gson().fromJson(dataPingJson, AdLjBean::class.java)
     }
 
     fun getAdBlackData(): Boolean {
@@ -78,13 +80,21 @@ object AdDataUtils {
             }
         }
     }
+    fun getConnectTime(): Pair<Int, Int> {
+        val default = 12
+        val num = getLjData().mts
+        val parts = num.split("&")
+        val firstNumber = parts.getOrNull(0)?.toIntOrNull() ?: default
+        val secondNumber = parts.getOrNull(1)?.toIntOrNull() ?: default
+        return Pair(firstNumber, secondNumber)
+    }
 
     const val open_type = "far"
     const val home_type = "eek"
     const val result_type = "mug"
     const val cont_type = "yum"
     const val list_type = "buy"
-    const val end_type = "end_type"
+    const val end_type = "gab"
 
     const val ad_wait = "ad_wait"
     const val ad_jump_over = "ad_jump_over"
@@ -131,7 +141,7 @@ object AdDataUtils {
     {
       "saturn_tt": "interstitial",
       "saturn_xx": "admob",
-      "saturn_dd": "ca-app-pub-3940256099942544/1033173712",
+      "saturn_dd": "ca-app-pub-3940256099942544/1033173712x",
       "saturn_kk": 1
     }
   ],
@@ -149,7 +159,8 @@ object AdDataUtils {
         {
   "soon": 1,
   "geez": 1,
-  "mosd": "1023272235545685"
+  "mosd":"",
+  "mts":"12&12"
 }
     """
 }

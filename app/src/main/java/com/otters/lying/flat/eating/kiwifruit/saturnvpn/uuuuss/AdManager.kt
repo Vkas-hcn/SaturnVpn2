@@ -32,6 +32,7 @@ import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.ad_c_nu
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.ad_load_date
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.ad_s_num
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.point16
+import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.vpn_ip
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.vvvvpp.hhhee.HomeFragment
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.vvvvpp.rrrll.EndFragment
 import kotlinx.coroutines.Dispatchers
@@ -52,17 +53,13 @@ class AdManager(private val application: Application) {
     private var adDataCont: AdEasy? = null
     private var adDataList: AdEasy? = null
     private var adDataBa: AdEasy? = null
+    private var isFirstLoadingOpenAd = true
 
     init {
         MobileAds.initialize(application) {
             Log.d("AdManager", "AdMob initialized")
         }
         isAppOpenSameDayBa()
-//        val testDeviceIds = Arrays.asList("76A730E9AE68BD60E99DF7B83D65C4B4")
-//        val configuration = RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
-//        MobileAds.setRequestConfiguration(configuration)
-//        val isTest = AdRequest.Builder().build()
-//        Log.e("TAG", "设备已正确添加为测试设备: ${isTest.isTestDevice(application)}", )
     }
 
     private fun canRequestAd(adType: String): Boolean {
@@ -72,6 +69,10 @@ class AdManager(private val application: Application) {
     }
 
     fun loadAd(adType: String) {
+        if (!AAApp.vvState) {
+            Log.e("TAG", "${adType}-vpn未连接-无法加载")
+            return
+        }
         adAllData = AdDataUtils.getAdListData()
         if (adLoadInProgress[adType] == true) return
         adLoadInProgress[adType] = true
@@ -92,6 +93,17 @@ class AdManager(private val application: Application) {
     private fun loadAdFromList(adType: String, adList: List<AdEasy>, index: Int) {
         if (index >= adList.size) {
             adLoadInProgress[adType] = false
+            if (isFirstLoadingOpenAd && adType == AdDataUtils.open_type) {
+                loadAdFromList(adType, adList, 0)
+            }
+            return
+        }
+        if ((getLoadIp(adType).isNotEmpty()) && getLoadIp(adType) != AAApp.appComponent.vpn_ip) {
+            Timber.tag("TAG")
+                .e(adType + "-ip不一致-重新加载-load_ip=" + getLoadIp(adType) + "-now-ip=" + AAApp.appComponent.vpn_ip)
+            qcAd(adType)
+            clearLoadIp(adType)
+            loadAdFromList(adType, adList, index)
             return
         }
         if (adCache.containsKey(adType) && !canRequestAd(adType)) {
@@ -121,6 +133,7 @@ class AdManager(private val application: Application) {
 
     private fun loadOpenAd(adType: String, adEasy: AdEasy, adList: List<AdEasy>, index: Int) {
         adDataOpen = TTTDDUtils.beforeLoadLink(adEasy)
+        DataUtils.openTypeIp = adDataCont?.loadIp?:""
         AppOpenAd.load(application, adEasy.saturn_dd, AdRequest.Builder().build(),
             AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,
             object : AppOpenAd.AppOpenAdLoadCallback() {
@@ -145,7 +158,7 @@ class AdManager(private val application: Application) {
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                     Log.e("TAG", "${adType}广告加载失败=${loadAdError}")
                     loadAdFromList(adType, adList, index + 1)
-                    TTTDDUtils.moo17(adType,loadAdError.message)
+                    TTTDDUtils.moo17(adType, loadAdError.message)
                 }
             })
     }
@@ -153,8 +166,11 @@ class AdManager(private val application: Application) {
     private fun loadNativeAd(adType: String, adEasy: AdEasy, adList: List<AdEasy>, index: Int) {
         if (adType == AdDataUtils.home_type) {
             adDataHome = TTTDDUtils.beforeLoadLink(adEasy)
+            DataUtils.homeTypeIp = adDataCont?.loadIp?:""
+
         } else {
             adDataResult = TTTDDUtils.beforeLoadLink(adEasy)
+            DataUtils.resultTypeIp = adDataCont?.loadIp?:""
         }
         val builder = NativeAdOptions.Builder()
         val adLoader = com.google.android.gms.ads.AdLoader.Builder(application, adEasy.saturn_dd)
@@ -171,7 +187,7 @@ class AdManager(private val application: Application) {
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                     Log.e("TAG", "${adType}广告加载失败=${loadAdError}")
                     loadAdFromList(adType, adList, index + 1)
-                    TTTDDUtils.moo17(adType,loadAdError.message)
+                    TTTDDUtils.moo17(adType, loadAdError.message)
                 }
 
                 override fun onAdClicked() {
@@ -194,16 +210,20 @@ class AdManager(private val application: Application) {
         when (adType) {
             AdDataUtils.cont_type -> {
                 adDataCont = TTTDDUtils.beforeLoadLink(adEasy)
+                DataUtils.contTypeIp = adDataCont?.loadIp?:""
             }
 
             AdDataUtils.list_type -> {
                 adDataList = TTTDDUtils.beforeLoadLink(adEasy)
+                DataUtils.listTypeIp = adDataCont?.loadIp?:""
             }
 
             else -> {
                 adDataBa = TTTDDUtils.beforeLoadLink(adEasy)
+                DataUtils.endTypeIp = adDataCont?.loadIp?:""
             }
         }
+
         InterstitialAd.load(application, adEasy.saturn_dd, AdRequest.Builder().build(),
             object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(ad: InterstitialAd) {
@@ -219,7 +239,7 @@ class AdManager(private val application: Application) {
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                     Log.e("TAG", "${adType}广告加载失败=${loadAdError}")
                     loadAdFromList(adType, adList, index + 1)
-                    TTTDDUtils.moo17(adType,loadAdError.message)
+                    TTTDDUtils.moo17(adType, loadAdError.message)
                 }
             })
     }
@@ -232,6 +252,12 @@ class AdManager(private val application: Application) {
     fun showAd(
         adType: String, activity: FragmentActivity, fragment: Fragment, nextFun: () -> Unit
     ) {
+        if ((getLoadIp(adType).isNotEmpty()) && getLoadIp(adType) != AAApp.appComponent.vpn_ip) {
+            Timber.tag("TAG")
+                .e(adType + "-ip不一致-禁止显示-load_ip=" + getLoadIp(adType) + "-now-ip=" + AAApp.appComponent.vpn_ip)
+            nextFun()
+            return
+        }
         if (adCache.containsKey(adType) && isAppInForeground(activity)) {
             when (val ad = adCache[adType]) {
                 is AppOpenAd -> {
@@ -253,7 +279,8 @@ class AdManager(private val application: Application) {
                         }
                     ad.show(activity)
                     setShowNumFun()
-                    Log.e("TAG", "展示-${adType}广告: ")
+                    Timber.tag("TAG")
+                        .e(adType + "ip一致-显示-${adType}广告-load_ip=" + getLoadIp(adType) + "-now-ip=" + AAApp.appComponent.vpn_ip)
                     adCache.remove(adType)
                     adDataOpen = TTTDDUtils.afterLoadLink(adDataOpen!!)
                 }
@@ -271,7 +298,7 @@ class AdManager(private val application: Application) {
                         override fun onAdDismissedFullScreenContent() {
                             Log.e("TAG", "关闭-${adType}广告: ")
                             qcAd(adType)
-                            if (adType == AdDataUtils.cont_type) {
+                            if (adType == AdDataUtils.home_type) {
                                 loadAd(adType)
                             }
                             if (isAppInForeground(activity)) {
@@ -316,7 +343,9 @@ class AdManager(private val application: Application) {
     fun canShowAd(adType: String): String {
         val ad = adCache[adType]
         val blackData = AdDataUtils.getAdBlackData()
-
+        if (!AAApp.vvState) {
+            return AdDataUtils.ad_jump_over
+        }
         if (blackData && (adType == AdDataUtils.home_type || adType == AdDataUtils.cont_type || adType == AdDataUtils.list_type || adType == AdDataUtils.end_type)) {
             return AdDataUtils.ad_jump_over
         }
@@ -432,7 +461,8 @@ class AdManager(private val application: Application) {
                     activity.binding.imgOcAd.isVisible = false
                     activity.binding.adLayoutAdmob.isVisible = true
                     setShowNumFun()
-                    Log.e("TAG", "展示-home_saturn广告: ")
+                    Timber.tag("TAG")
+                        .e("eek ip一致-显示-eek 广告-load_ip=" + getLoadIp(AdDataUtils.home_type) + "-now-ip=" + AAApp.appComponent.vpn_ip)
                     adCache.remove(AdDataUtils.home_type)
                     adLoadInProgress[AdDataUtils.home_type] = false
                     adDataHome = TTTDDUtils.afterLoadLink(adDataHome!!)
@@ -461,7 +491,8 @@ class AdManager(private val application: Application) {
                     activity.binding.imgOc.isVisible = false
                     activity.binding.adLayoutAdmob.isVisible = true
                     setShowNumFun()
-                    Log.e("TAG", "展示-resu_saturn广告: ")
+                    Timber.tag("TAG")
+                        .e("mug ip一致-显示-mug 广告-load_ip=" + getLoadIp(AdDataUtils.result_type) + "-now-ip=" + AAApp.appComponent.vpn_ip)
                     adCache.remove(AdDataUtils.result_type)
                     adLoadInProgress[AdDataUtils.result_type] = false
                     adDataResult = TTTDDUtils.afterLoadLink(adDataResult!!)
@@ -564,6 +595,66 @@ class AdManager(private val application: Application) {
                 bean,
                 adType
             )
+        }
+    }
+
+    private fun getLoadIp(adType: String): String {
+        return when (adType) {
+            AdDataUtils.open_type -> {
+                DataUtils.openTypeIp
+            }
+
+            AdDataUtils.cont_type -> {
+                DataUtils.contTypeIp
+            }
+
+            AdDataUtils.home_type -> {
+                DataUtils.homeTypeIp
+            }
+
+            AdDataUtils.result_type -> {
+                DataUtils.resultTypeIp
+            }
+
+            AdDataUtils.list_type -> {
+                DataUtils.listTypeIp
+            }
+
+            AdDataUtils.end_type -> {
+                DataUtils.endTypeIp
+            }
+
+            else -> {
+                ""
+            }
+        }
+    }
+
+    private fun clearLoadIp(adType: String) {
+        when (adType) {
+            AdDataUtils.open_type -> {
+                DataUtils.openTypeIp = ""
+            }
+
+            AdDataUtils.cont_type -> {
+                DataUtils.contTypeIp = ""
+            }
+
+            AdDataUtils.home_type -> {
+                DataUtils.homeTypeIp = ""
+            }
+
+            AdDataUtils.result_type -> {
+                DataUtils.resultTypeIp = ""
+            }
+
+            AdDataUtils.list_type -> {
+                DataUtils.listTypeIp = ""
+            }
+
+            AdDataUtils.end_type -> {
+                DataUtils.endTypeIp = ""
+            }
         }
     }
 }

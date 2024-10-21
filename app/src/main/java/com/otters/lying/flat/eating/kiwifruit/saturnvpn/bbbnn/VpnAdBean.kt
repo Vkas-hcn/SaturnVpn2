@@ -14,6 +14,7 @@ data class VpnAdBean(
     val gab: List<AdEasy>,
 
     )
+
 @Keep
 data class AdEasy(
     val saturn_dd: String,
@@ -30,5 +31,6 @@ data class AdEasy(
 data class AdLjBean(
     val soon: String,
     val geez: String,
-    val mosd:String,
+    val mosd: String,
+    val mts: String
 )

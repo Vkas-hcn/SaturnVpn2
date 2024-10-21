@@ -58,6 +58,7 @@ object TTTDDUtils {
             return "Version information not available"
         }
     }
+
     fun firstJsonData(): JSONObject {
         val jsonData = JSONObject()
         jsonData.put("senile", getAppVersion())
@@ -74,11 +75,13 @@ object TTTDDUtils {
         jsonData.put("britain", "111")
         return jsonData
     }
+
     fun getSessionJson(): String {
         return firstJsonData().apply {
             put("dulse", {})
         }.toString()
     }
+
     fun getInstallJson(referrerDetails: ReferrerDetails): String {
         return firstJsonData().apply {
             put("downward", JSONObject().apply {
@@ -118,6 +121,7 @@ object TTTDDUtils {
 
         }.toString()
     }
+
     fun getAdJson(
         adValue: AdValue,
         responseInfo: ResponseInfo,
@@ -194,7 +198,7 @@ object TTTDDUtils {
         adRevenue.setRevenue(adValue.valueMicros / 1000000.0, adValue.currencyCode)
         adRevenue.setAdRevenueNetwork(responseInfo?.mediationAdapterClassName)
         Adjust.trackAdRevenue(adRevenue)
-        if (!BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG && AdDataUtils.getLjData().mosd.isNotBlank()) {
             newLogger(appComponent).logPurchase(
                 BigDecimal((adValue.valueMicros / 1000000.0).toString()),
                 Currency.getInstance("USD")
@@ -206,12 +210,9 @@ object TTTDDUtils {
 
     fun beforeLoadLink(adInformation: AdEasy): AdEasy {
         if (vvState) {
-            val dataUtils =AdDataUtils.raoliu()
-            if (!dataUtils) {
-                adInformation.loadIp = appComponent.vpn_ip
-                adInformation.loadCity = appComponent.vpn_city
-                return adInformation
-            }
+            adInformation.loadIp = appComponent.vpn_ip
+            adInformation.loadCity = appComponent.vpn_city
+            return adInformation
         }
         adInformation.loadIp = appComponent.ben_ip
         adInformation.loadCity = "null"
@@ -220,17 +221,15 @@ object TTTDDUtils {
 
     fun afterLoadLink(adInformation: AdEasy): AdEasy {
         if (vvState) {
-            val dataUtils =AdDataUtils.raoliu()
-            if (!dataUtils) {
-                adInformation.showIp = appComponent.vpn_ip
-                adInformation.showTheCity =appComponent.vpn_city
-                return adInformation
-            }
+            adInformation.showIp = appComponent.vpn_ip
+            adInformation.showTheCity = appComponent.vpn_city
+            return adInformation
         }
-        adInformation.showIp =  appComponent.ben_ip
+        adInformation.showIp = appComponent.ben_ip
         adInformation.showTheCity = "null"
         return adInformation
     }
+
     fun postSessionData() {
         val data = getSessionJson()
         tag("TAG").e("postSessionData: data=%s", data)
@@ -281,23 +280,29 @@ object TTTDDUtils {
         Intrinsics.checkNotNullParameter(adInformation, "adInformation")
         Intrinsics.checkNotNullParameter(adType, "adType")
         val data = getAdJson(adValue!!, responseInfo!!, adInformation!!, adType)
-        tag("TAG").e("postAdData: data=%s", data)
+        tag("TAG").e("${adType}-postAdData: data=%s", data)
         postInformation(data, object : NetUtils.Callback {
             override fun onSuccess(response: String) {
                 Intrinsics.checkNotNullParameter(response, "response")
-                tag("TAG").e("postAdData: onSuccess=%s", response)
+                tag("TAG").e("${adType}-postAdData: onSuccess=%s", response)
             }
 
             override fun onFailure(error: String) {
                 Intrinsics.checkNotNullParameter(error, "error")
-                tag("TAG").e("postAdData: onFailure=%s", error)
+                tag("TAG").e("${adType}-postAdData: onFailure=%s", error)
             }
         })
         postAdOnline(adValue, responseInfo)
     }
 
 
-    fun postPointData(name: String, key: String?=null, keyValue: Any?=null, key2: String?=null, keyValue2: Any?=null) {
+    fun postPointData(
+        name: String,
+        key: String? = null,
+        keyValue: Any? = null,
+        key2: String? = null,
+        keyValue2: Any? = null
+    ) {
         Intrinsics.checkNotNullParameter(name, "name")
         val pointJson = if (key != null && keyValue != null) {
             getTbaTimeDataJson(name, key, keyValue, key2, keyValue2)
@@ -311,6 +316,7 @@ object TTTDDUtils {
                     Log.e("TAG", "${name}-打点事件上报-成功->${response}")
 
                 }
+
                 override fun onFailure(error: String) {
                     Log.e("TAG", "${name}-打点事件上报-失败=$error")
                 }
@@ -363,12 +369,10 @@ object TTTDDUtils {
     }
 
 
-
-
     fun moo10() {
         CoroutineScope(Dispatchers.IO).launch {
             val pingValue = pingIPAddress(appComponent.vpn_ip)
-            val isHaveData = if (pingValue==null) {
+            val isHaveData = if (pingValue == null) {
                 "2"
             } else {
                 "1"
@@ -398,7 +402,7 @@ object TTTDDUtils {
     }
 
     fun moo14(adType: String) {
-        val ss_data =AdDataUtils.raoliu()
+        val ss_data = AdDataUtils.raoliu()
         postPointData(
             "moo14",
             "seru",
@@ -448,7 +452,8 @@ object TTTDDUtils {
 
     private fun getFirstInstallTime(): Long {
         try {
-            val packageInfo = appComponent.packageManager.getPackageInfo(appComponent.packageName, 0)
+            val packageInfo =
+                appComponent.packageManager.getPackageInfo(appComponent.packageName, 0)
             return packageInfo.firstInstallTime / 1000
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
@@ -458,7 +463,8 @@ object TTTDDUtils {
 
     private fun getLastUpdateTime(): Long {
         try {
-            val packageInfo = appComponent.packageManager.getPackageInfo(appComponent.packageName, 0)
+            val packageInfo =
+                appComponent.packageManager.getPackageInfo(appComponent.packageName, 0)
             return packageInfo.lastUpdateTime / 1000
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()

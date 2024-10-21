@@ -1,7 +1,9 @@
 package com.otters.lying.flat.eating.kiwifruit.saturnvpn.vvvvpp.llltt
 
+import android.util.Log
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.R
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.AAApp
@@ -18,6 +20,7 @@ import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.online_
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.NetUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class MoreFragment : BaseFragment<FragmentMoreBinding, MoreViewModel>(){
@@ -86,7 +89,8 @@ class MoreFragment : BaseFragment<FragmentMoreBinding, MoreViewModel>(){
 
     private fun backFun() {
         showBackAd {
-            navigateTo(R.id.action_moreFragment_to_homeFragment)
+            Log.e("TAG", "backFun:more ", )
+            navigateToBack()
         }
         TTTDDUtils.postPointData("moo20")
     }
@@ -97,15 +101,32 @@ class MoreFragment : BaseFragment<FragmentMoreBinding, MoreViewModel>(){
                 nextFun()
                 return@launch
             }
-            if (AAApp.adManager?.canShowAd(AdDataUtils.list_type) == AdDataUtils.ad_show) {
-                binding.conLoadAd.isVisible = true
-                delay(1000)
-                binding.conLoadAd.isVisible = false
-                AAApp.adManager?.showAd(AdDataUtils.list_type, requireActivity(),this@MoreFragment) {
-                    nextFun()
+            AAApp.adManager?.loadAd(AdDataUtils.list_type)
+            val startTime = System.currentTimeMillis()
+            var elapsedTime: Long
+            binding.conLoadAd.isVisible = true
+            try {
+                while (isActive) {
+                    elapsedTime = System.currentTimeMillis() - startTime
+                    if (elapsedTime >= 4000L) {
+                        Log.e("TAG", "连接超时")
+                        nextFun()
+                        binding.conLoadAd.isVisible = false
+                        break
+                    }
+
+                    if (AAApp.adManager?.canShowAd(AdDataUtils.list_type) == AdDataUtils.ad_show) {
+                        AAApp.adManager?.showAd(AdDataUtils.list_type, requireActivity(), this@MoreFragment) {
+                            nextFun()
+                            binding.conLoadAd.isVisible = false
+                        }
+                        break
+                    }
+                    delay(500L)
                 }
-            } else {
+            } catch (e: Exception) {
                 nextFun()
+                binding.conLoadAd.isVisible = false
             }
         }
     }

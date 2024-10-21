@@ -262,26 +262,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <View
-                android:id="@+id/view_guide_lottie"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:background="#8C252525"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/lav_connect"
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:layout_marginStart="-60dp"
-                android:layout_marginTop="10dp"
-                android:visibility="gone"
-                app:layout_constraintStart_toEndOf="@+id/atv_connect"
-                app:layout_constraintTop_toTopOf="@+id/atv_connect"
-                app:lottie_autoPlay="true"
-                app:lottie_fileName="hand.json"
-                app:lottie_loop="true" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout

@@ -54,6 +54,31 @@ abstract class BaseFragment<DB : ViewDataBinding, VM : BaseViewModel> : Fragment
             Log.e("BaseFragment", "Navigation action not found: $actionId", e)
         }
     }
+    fun navigateTo(actionId: Int, callback: (() -> Unit)? = null) {
+        try {
+            val navController = findNavController()
+
+            // 设置一个返回结果监听器，如果需要回调
+            if (callback != null) {
+                val backStackEntry = navController.getBackStackEntry(navController.graph.id)
+                backStackEntry.savedStateHandle.set("callback_key", true)
+
+                backStackEntry.savedStateHandle.getLiveData<Boolean>("callback_key")
+                    .observe(backStackEntry) { result ->
+                        if (result == true) {
+                            callback.invoke()
+                            // 清除结果，防止重复触发
+                            backStackEntry.savedStateHandle.remove<Boolean>("callback_key")
+                        }
+                    }
+            }
+
+            navController.navigate(actionId)
+        } catch (e: IllegalArgumentException) {
+            Log.e("BaseFragment", "Navigation action not found: $actionId", e)
+        }
+    }
+
 
     fun navigateToBack(){
         findNavController().popBackStack()

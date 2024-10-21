@@ -23,6 +23,7 @@ import com.github.shadowsocks.utils.Key
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.R
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.AAApp
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.BaseFragment
+import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.Data
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.getIPInfo
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.showDueDialog
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.databinding.FragmentHomeBinding
@@ -35,6 +36,8 @@ import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.point7
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.point8
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.saturn_dow_num
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.saturn_up_num
+import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.vpn_city
+import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.vpn_ip
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -74,8 +77,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
         Log.e("TAG", "home ----init-----: ")
         viewModel.initializeServerData(binding) {
             activity?.let {
-                jumpLaMore=true
-                Log.e("More", "setupViews: 1", )
+                jumpLaMore = true
+                Log.e("More", "setupViews: 1")
                 clickVpnConnect(it)
             }
         }
@@ -86,12 +89,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
                 })
             })
         }
-        binding.viewGuideLottie.setOnClickListener { }
+//        binding.viewGuideLottie.setOnClickListener { }
         binding.tvAppProxy.setOnClickListener {
             navigateTo(R.id.action_homeFragment_to_proxyFragment)
         }
         binding.tvServerList.setOnClickListener {
-            navigateTo(R.id.action_homeFragment_to_moreFragment)
+            navigateTo(R.id.action_homeFragment_to_moreFragment) {
+                // 从 B 返回到 A 后执行的代码
+                Log.e("TAG", "Returned from B to A, executing callback...")
+            }
+
         }
         binding.tvPrivacyPolicy.setOnClickListener {
             navigateTo(R.id.action_homeFragment_to_ppFragment)
@@ -101,11 +108,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
                 activity?.let { it1 -> clickVpnConnect(it1) }
             })
         }
-        binding.lavConnect.setOnClickListener {
-            clickChange(nextFun = {
-                activity?.let { it1 -> clickVpnConnect(it1) }
-            })
-        }
+//        binding.lavConnect.setOnClickListener {
+//            clickChange(nextFun = {
+//                activity?.let { it1 -> clickVpnConnect(it1) }
+//            })
+//        }
         binding.imageView.setOnClickListener {
             clickChange(nextFun = {
                 activity?.let { it1 -> clickVpnConnect(it1) }
@@ -123,6 +130,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
         activity?.let { showDueDialog(it) }
         showTimeLi()
         showHomeAd()
+        Log.e("TAG", "setupViews: showHomeAd", )
     }
 
 
@@ -165,7 +173,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
         jobConnect?.cancel()
         jobConnect = null
         if (AAApp.vvState) {
-            Log.e("More", "setSsVpnState: =2====2", )
+            Log.e("More", "setSsVpnState: =2====2")
             setTypeService(2)
         } else {
             Core.stopService()
@@ -211,7 +219,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
             }
         }
     }
-    private fun showVpnResult(){
+
+    private fun showVpnResult() {
         if (checkVPNPermission()) {
             activeVpnNext()
         } else {
@@ -224,7 +233,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
             }
         }
     }
-    private fun activeVpnNext(){
+
+    private fun activeVpnNext() {
         val rlData = AdDataUtils.raoliu()
         DataUtils.rl_state = if (rlData) {
             "1"
@@ -233,22 +243,29 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
         }
         startVpn()
     }
+
     private fun requestPermissionForResult(result: ActivityResult) {
-        if (result.resultCode ==RESULT_OK) {
+        if (result.resultCode == RESULT_OK) {
             if (AAApp.appComponent.point8 != "1") {
                 AAApp.appComponent.point8 = "1"
                 postPointData("moo8")
             }
             activeVpnNext()
         } else {
-            Toast.makeText(activity, "Please give permission to continue to the next step", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                activity,
+                "Please give permission to continue to the next step",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
+
     private fun checkVPNPermission(): Boolean {
         VpnService.prepare(requireActivity()).let {
             return it == null
         }
     }
+
     private fun startVpn() {
         jobStart?.cancel()
         jobStart = null
@@ -266,9 +283,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
                 return@launch
             }
             if (AAApp.vvState) {
-                showConnectAd()
+                showConnectAd(AdDataUtils.getConnectTime().second)
             } else {
                 Log.e("TAG", "vpn连接: =${nowClickState}")
+                AAApp.appComponent.vpn_ip = DataUtils.nowLoadIpData
+                AAApp.appComponent.vpn_city = DataUtils.nowLoadCityData
                 Core.startService()
                 postPointData("moo9")
             }
@@ -283,9 +302,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
             if (showAd) {
                 showAd = false
                 Log.e("TAG", "vpn连接成功")
-                showConnectAd()
+                showConnectAd(AdDataUtils.getConnectTime().first)
+                AAApp.adManager?.loadAd(AdDataUtils.end_type)
+                AAApp.adManager?.loadAd(AdDataUtils.result_type)
             }
             TTTDDUtils.moo10()
+        }
+        if (state.name == "Stopping") {
+            AAApp.vvState = false
         }
         if (state.name == "Stopped") {
             AAApp.vvState = false
@@ -296,7 +320,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
     }
 
     override fun onServiceConnected(service: IShadowsocksService) {
-        if(!jumpLaMore) {
+        if (!jumpLaMore) {
             Log.e("TAG", "onServiceConnected: ${service.state}")
             val state = BaseService.State.values()[service.state]
             Log.e("TAG", "ss-初始化: ${state.name}")
@@ -335,7 +359,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
     private fun setSsVpnState(canStop: Boolean) {
         AAApp.vvState = canStop
         if (AAApp.vvState) {
-            Log.e("More", "setSsVpnState: =2====1", )
             setTypeService(2)
         } else {
             setTypeService(0)
@@ -383,18 +406,18 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
     private fun setGuideView(show: Boolean) {
         if (AAApp.cloneGuide) return
         AAApp.cloneGuide = !show
-        binding.viewGuideLottie.isVisible = show
-        binding.lavConnect.isVisible = show
+//        binding.viewGuideLottie.isVisible = show
+//        binding.lavConnect.isVisible = show
     }
 
     private fun backFun() {
         if (binding.conLoadAd.isVisible) {
             return
         }
-        if (binding.viewGuideLottie.isVisible) {
-            setGuideView(false)
-            return
-        }
+//        if (binding.viewGuideLottie.isVisible) {
+//            setGuideView(false)
+//            return
+//        }
         if (nowClickState == "2" && binding.laKs.isVisible) {
             stopOperate()
             return
@@ -406,24 +429,21 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
         })
     }
 
-    private fun showConnectAd() {
+    private fun showConnectAd(connectTimeData: Int) {
         jobConnect?.cancel()
         jobConnect = null
-        AAApp.adManager?.loadAd(AdDataUtils.cont_type)
-        AAApp.adManager?.loadAd(AdDataUtils.end_type)
-        AAApp.adManager?.loadAd(AdDataUtils.result_type)
-
         jobConnect = activity?.lifecycleScope?.launch(Dispatchers.Main) {
             if (AAApp.adManager?.canShowAd(AdDataUtils.cont_type) == AdDataUtils.ad_jump_over) {
                 showFinishAd()
                 return@launch
             }
+            AAApp.adManager?.loadAd(AdDataUtils.cont_type)
             val startTime = System.currentTimeMillis()
             var elapsedTime: Long
             try {
                 while (isActive) {
                     elapsedTime = System.currentTimeMillis() - startTime
-                    if (elapsedTime >= 10000L) {
+                    if (elapsedTime >= (connectTimeData * 1000)) {
                         Log.e("TAG", "连接超时")
                         showFinishAd()
                         break
@@ -453,6 +473,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
         Log.e("TAG", "vpn连接-showFinishAd: $nowClickState")
         if (nowClickState == "0") {
             connectFinish()
+            AAApp.adManager?.loadAd(AdDataUtils.cont_type)
+            AAApp.adManager?.loadAd(AdDataUtils.home_type)
         }
         if (nowClickState == "2") {
             disConnectFinish()
@@ -461,7 +483,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
 
     private fun connectFinish() {
         setGuideView(false)
-        Log.e("More", "setSsVpnState: =2====3", )
+        Log.e("More", "setSsVpnState: =2====3")
         setTypeService(2)
         pageToRePage()
     }
@@ -508,8 +530,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
         if (blackData) {
             Log.e("TAG", "黑名单屏蔽home_saturn广告")
             binding.adLayout.isVisible = false
+            return
+        } else if (!AAApp.vvState) {
+            binding.adLayout.isVisible = true
+            binding.adLayoutAdmob.isVisible = false
+            binding.imgOcAd.isVisible = true
+            return
         } else {
             binding.adLayout.isVisible = true
+            binding.adLayoutAdmob.isVisible = true
+            binding.imgOcAd.isVisible = true
         }
         jobHome?.cancel()
         jobHome = null

@@ -23,6 +23,7 @@ import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.toJson
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.databinding.FragmentHomeBinding
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.databinding.FragmentMoreBinding
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.CenterUtils.getSaturnImage
+import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.click_now_vpn
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.connect_now_vpn
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.fast_now_vpn
@@ -82,8 +83,8 @@ class HomeViewModel : BaseViewModel() {
 
     private fun setSkServerData(profile: Profile, bestData: SX): Profile {
         Log.e("TAG", "setSkServerData: ip=${bestData.CwDwOnOtuQ}")
-        AAApp.appComponent.vpn_ip = bestData.CwDwOnOtuQ
-        AAApp.appComponent.vpn_city = bestData.LMfccpX
+        DataUtils.nowLoadIpData = bestData.CwDwOnOtuQ
+        DataUtils.nowLoadCityData= bestData.LMfccpX
         AAApp.appComponent.connect_now_vpn = bestData.toJson()
         profile.name = bestData.TiORzr + "-" + bestData.LMfccpX
         profile.host = bestData.CwDwOnOtuQ

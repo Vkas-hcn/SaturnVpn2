@@ -56,6 +56,7 @@ class StartFragment : BaseFragment<FragmentStartBinding, StartViewModel>() {
             adManager?.loadAd(AdDataUtils.cont_type)
             adManager?.loadAd(AdDataUtils.home_type)
         }
+        Log.e("TAG", "onCreate: Apppppppppp-start=${AAApp.vvState}", )
     }
 
     override fun observeViewModel() {
@@ -84,9 +85,6 @@ class StartFragment : BaseFragment<FragmentStartBinding, StartViewModel>() {
                 initFaceBook()
             }
         }
-        initFaceBook()
-        Log.e("TAG", "开始检测远程数据")
-
         val checkConditionAndPreloadAd = object : Runnable {
             override fun run() {
                 if (isCa) {
@@ -108,7 +106,7 @@ class StartFragment : BaseFragment<FragmentStartBinding, StartViewModel>() {
     }
     private fun initFaceBook() {
         val bean = getLjData()
-        if(bean.mosd.isNullOrEmpty()){return}
+        if(bean.mosd.isBlank()){return}
         Log.e("TAG", "initFaceBook: ${bean.mosd}")
         FacebookSdk.setApplicationId(bean.mosd)
         FacebookSdk.sdkInitialize(AAApp.appComponent)
@@ -163,7 +161,7 @@ class StartFragment : BaseFragment<FragmentStartBinding, StartViewModel>() {
                 Log.e("TAG", "等待OPEN广告中。。。${adShown} ")
                 if (adShown || !isAdded) return // 确保 Fragment 已附加
                 attemptCount++
-                if (attemptCount < 20) {
+                if (attemptCount < 10) {
                     handler.postDelayed(this, 500)
                 } else {
                     adShown = true
