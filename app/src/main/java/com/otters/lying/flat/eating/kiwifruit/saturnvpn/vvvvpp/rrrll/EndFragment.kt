@@ -6,7 +6,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.R
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.AAApp
-import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.AAApp.Companion.adManager
+import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.AAApp.Companion.adManagerEndInt
+import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.AAApp.Companion.adManagerResultNav
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.BaseFragment
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.parseSX
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.databinding.FragmentEndBinding
@@ -84,11 +85,11 @@ class EndFragment : BaseFragment<FragmentEndBinding, EndViewModel>() {
 
     private fun showBackAd(nextFun: () -> Unit) {
         activity?.lifecycleScope?.launch(Dispatchers.Main) {
-            if (adManager?.canShowAd(AdDataUtils.end_type) == AdDataUtils.ad_jump_over) {
+            if (adManagerEndInt?.canShowAd(AdDataUtils.end_type) == AdDataUtils.ad_jump_over) {
                 nextFun()
                 return@launch
             }
-            adManager?.loadAd(AdDataUtils.end_type)
+            adManagerEndInt?.loadAd(AdDataUtils.end_type)
             val startTime = System.currentTimeMillis()
             var elapsedTime: Long
             binding.conLoadAd.isVisible = true
@@ -102,8 +103,8 @@ class EndFragment : BaseFragment<FragmentEndBinding, EndViewModel>() {
                         break
                     }
 
-                    if (adManager?.canShowAd(AdDataUtils.end_type) == AdDataUtils.ad_show) {
-                        adManager?.showAd(AdDataUtils.end_type, requireActivity(), this@EndFragment) {
+                    if (adManagerEndInt?.canShowAd(AdDataUtils.end_type) == AdDataUtils.ad_show) {
+                        adManagerEndInt?.showAd(AdDataUtils.end_type, requireActivity(), this@EndFragment) {
                             nextFun()
                             binding.conLoadAd.isVisible = false
                         }
@@ -135,16 +136,16 @@ class EndFragment : BaseFragment<FragmentEndBinding, EndViewModel>() {
     private fun showEndAd() {
         jobResult?.cancel()
         jobResult = null
-        if (adManager?.canShowAd(AdDataUtils.result_type) == AdDataUtils.ad_jump_over) {
+        if (adManagerResultNav?.canShowAd(AdDataUtils.result_type) == AdDataUtils.ad_jump_over) {
             binding.imgOc.isVisible = true
             binding.adLayoutAdmob.isVisible = false
         }
-        adManager?.loadAd(AdDataUtils.end_type)
+        adManagerResultNav?.loadAd(AdDataUtils.result_type)
         jobResult = lifecycleScope.launch {
             delay(300)
             while (isActive) {
-                if (adManager?.canShowAd(AdDataUtils.result_type) == AdDataUtils.ad_show) {
-                    adManager?.showAd(
+                if (adManagerResultNav?.canShowAd(AdDataUtils.result_type) == AdDataUtils.ad_show) {
+                    adManagerResultNav?.showAd(
                         AdDataUtils.result_type,
                         requireActivity(),
                         this@EndFragment

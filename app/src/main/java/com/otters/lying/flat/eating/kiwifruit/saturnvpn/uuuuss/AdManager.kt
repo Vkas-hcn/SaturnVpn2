@@ -97,6 +97,7 @@ class AdManager(private val application: Application) {
             if (isFirstLoadingOpenAd && adType == AdDataUtils.open_type) {
                 loadAdFromList(adType, adList, 0)
             }
+            log("广告数据列表已用完，无法加载更多广告")
             return
         }
         if ((getLoadIp(adType).isNotEmpty()) && getLoadIp(adType) != AAApp.appComponent.vpn_ip) {

@@ -48,7 +48,13 @@ class AAApp : Application() {
         lateinit var saturnUtils: MMKV
         var vvState = false
         var globalTimer: GlobalTimer? = null
-        var adManager: AdManager? = null
+        var adManagerOpen: AdManager? = null
+        var adManagerConnect: AdManager? = null
+        var adManagerHomeNav: AdManager? = null
+        var adManagerResultNav: AdManager? = null
+        var adManagerEndInt: AdManager? = null
+        var adManagerListInt: AdManager? = null
+
         var cloneGuide: Boolean = false
 
         var jumpToHomeType = "0"//0:shoudong,1:fast,2:item,
@@ -69,7 +75,12 @@ class AAApp : Application() {
         Log.e("TAG", "onCreate: App --${isMainProcess(this)}")
         if (isMainProcess(this)) {
             globalTimer = GlobalTimer()
-            adManager = AdManager(this)
+            adManagerOpen = AdManager(this)
+            adManagerConnect = AdManager(this)
+            adManagerHomeNav = AdManager(this)
+            adManagerResultNav = AdManager(this)
+            adManagerEndInt = AdManager(this)
+            adManagerListInt = AdManager(this)
             if (appComponent.userData.isBlank()) {
                 appComponent.userData = UUID.randomUUID().toString()
             }

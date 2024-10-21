@@ -40,7 +40,7 @@ class MoreFragment : BaseFragment<FragmentMoreBinding, MoreViewModel>(){
         }
         initAdapter()
         initFastService()
-        AAApp.adManager?.loadAd(AdDataUtils.list_type)
+        AAApp.adManagerListInt?.loadAd(AdDataUtils.list_type)
         TTTDDUtils.postPointData("moo18")
     }
 
@@ -98,11 +98,11 @@ class MoreFragment : BaseFragment<FragmentMoreBinding, MoreViewModel>(){
 
     private fun showBackAd(nextFun: () -> Unit) {
         activity?.lifecycleScope?.launch(Dispatchers.Main) {
-            if (AAApp.adManager?.canShowAd(AdDataUtils.list_type) == AdDataUtils.ad_jump_over) {
+            if (AAApp.adManagerListInt?.canShowAd(AdDataUtils.list_type) == AdDataUtils.ad_jump_over) {
                 nextFun()
                 return@launch
             }
-            AAApp.adManager?.loadAd(AdDataUtils.list_type)
+            AAApp.adManagerListInt?.loadAd(AdDataUtils.list_type)
             val startTime = System.currentTimeMillis()
             var elapsedTime: Long
             binding.conLoadAd.isVisible = true
@@ -116,8 +116,8 @@ class MoreFragment : BaseFragment<FragmentMoreBinding, MoreViewModel>(){
                         break
                     }
 
-                    if (AAApp.adManager?.canShowAd(AdDataUtils.list_type) == AdDataUtils.ad_show) {
-                        AAApp.adManager?.showAd(AdDataUtils.list_type, requireActivity(), this@MoreFragment) {
+                    if (AAApp.adManagerListInt?.canShowAd(AdDataUtils.list_type) == AdDataUtils.ad_show) {
+                        AAApp.adManagerListInt?.showAd(AdDataUtils.list_type, requireActivity(), this@MoreFragment) {
                             nextFun()
                             binding.conLoadAd.isVisible = false
                         }

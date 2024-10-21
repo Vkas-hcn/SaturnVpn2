@@ -17,7 +17,7 @@ import com.google.android.gms.ads.ResponseInfo
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.BuildConfig
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.AAApp
-import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.AAApp.Companion.adManager
+import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.AAApp.Companion.adManagerConnect
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.AAApp.Companion.appComponent
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.AAApp.Companion.vvState
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.AdEasy
@@ -383,7 +383,7 @@ object TTTDDUtils {
             postPointData(
                 "moo10",
                 "seru",
-                adManager?.getAdDataState(AdDataUtils.cont_type),
+                adManagerConnect?.getAdDataState(AdDataUtils.cont_type),
                 "sert",
                 isHaveData
             )
@@ -398,7 +398,7 @@ object TTTDDUtils {
         }
         postPointData(
             "moo12", "seru",
-            adManager?.getAdDataState(AdDataUtils.cont_type),
+            adManagerConnect?.getAdDataState(AdDataUtils.cont_type),
             "sert",
             text
         )

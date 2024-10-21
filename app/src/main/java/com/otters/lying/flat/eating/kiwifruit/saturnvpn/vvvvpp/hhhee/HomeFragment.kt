@@ -304,8 +304,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
                 showAd = false
                 log( "vpn连接成功")
                 showConnectAd(AdDataUtils.getConnectTime().first)
-                AAApp.adManager?.loadAd(AdDataUtils.end_type)
-                AAApp.adManager?.loadAd(AdDataUtils.result_type)
+                AAApp.adManagerEndInt?.loadAd(AdDataUtils.end_type)
+                AAApp.adManagerResultNav?.loadAd(AdDataUtils.result_type)
             }
             TTTDDUtils.moo10()
         }
@@ -426,7 +426,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
 
         clickChange(nextFun = {
             requireActivity().finish()
-            exitProcess(0)
         })
     }
 
@@ -434,11 +433,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
         jobConnect?.cancel()
         jobConnect = null
         jobConnect = activity?.lifecycleScope?.launch(Dispatchers.Main) {
-            if (AAApp.adManager?.canShowAd(AdDataUtils.cont_type) == AdDataUtils.ad_jump_over) {
+            if (AAApp.adManagerConnect?.canShowAd(AdDataUtils.cont_type) == AdDataUtils.ad_jump_over) {
                 showFinishAd()
                 return@launch
             }
-            AAApp.adManager?.loadAd(AdDataUtils.cont_type)
+            AAApp.adManagerConnect?.loadAd(AdDataUtils.cont_type)
             val startTime = System.currentTimeMillis()
             var elapsedTime: Long
             try {
@@ -450,11 +449,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
                         break
                     }
 
-                    if (AAApp.adManager?.canShowAd(AdDataUtils.cont_type) == AdDataUtils.ad_show) {
+                    if (AAApp.adManagerConnect?.canShowAd(AdDataUtils.cont_type) == AdDataUtils.ad_show) {
                         binding.conLoadAd.isVisible = true
                         delay(1000)
                         binding.conLoadAd.isVisible = false
-                        AAApp.adManager?.showAd(
+                        AAApp.adManagerConnect?.showAd(
                             AdDataUtils.cont_type,
                             requireActivity(),
                             this@HomeFragment
@@ -474,8 +473,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
         log( "vpn连接-showFinishAd: $nowClickState")
         if (nowClickState == "0") {
             connectFinish()
-            AAApp.adManager?.loadAd(AdDataUtils.cont_type)
-            AAApp.adManager?.loadAd(AdDataUtils.home_type)
+            AAApp.adManagerConnect?.loadAd(AdDataUtils.cont_type)
+            AAApp.adManagerHomeNav?.loadAd(AdDataUtils.home_type)
         }
         if (nowClickState == "2") {
             disConnectFinish()
@@ -547,8 +546,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
         jobHome = lifecycleScope.launch {
             delay(300)
             while (isActive) {
-                if (AAApp.adManager?.canShowAd(AdDataUtils.home_type) == AdDataUtils.ad_show) {
-                    AAApp.adManager?.showAd(
+                if (AAApp.adManagerHomeNav?.canShowAd(AdDataUtils.home_type) == AdDataUtils.ad_show) {
+                    AAApp.adManagerHomeNav?.showAd(
                         AdDataUtils.home_type,
                         requireActivity(),
                         this@HomeFragment
