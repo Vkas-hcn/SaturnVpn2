@@ -12,6 +12,7 @@ import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.SX
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.parseSX
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.databinding.FragmentMoreBinding
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.tttttaa.TTTDDUtils
+import com.otters.lying.flat.eating.kiwifruit.saturnvpn.tttttaa.TTTDDUtils.log
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.AdDataUtils
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.CenterUtils
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.connect_now_vpn
@@ -89,7 +90,7 @@ class MoreFragment : BaseFragment<FragmentMoreBinding, MoreViewModel>(){
 
     private fun backFun() {
         showBackAd {
-            Log.e("TAG", "backFun:more ", )
+            log( "backFun:more ", )
             navigateToBack()
         }
         TTTDDUtils.postPointData("moo20")
@@ -109,7 +110,7 @@ class MoreFragment : BaseFragment<FragmentMoreBinding, MoreViewModel>(){
                 while (isActive) {
                     elapsedTime = System.currentTimeMillis() - startTime
                     if (elapsedTime >= 4000L) {
-                        Log.e("TAG", "连接超时")
+                        log( "连接超时")
                         nextFun()
                         binding.conLoadAd.isVisible = false
                         break

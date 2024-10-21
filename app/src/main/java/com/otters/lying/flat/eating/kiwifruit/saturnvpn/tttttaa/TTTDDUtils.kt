@@ -198,6 +198,7 @@ object TTTDDUtils {
         adRevenue.setRevenue(adValue.valueMicros / 1000000.0, adValue.currencyCode)
         adRevenue.setAdRevenueNetwork(responseInfo?.mediationAdapterClassName)
         Adjust.trackAdRevenue(adRevenue)
+        // TODO fb id 2
         if (!BuildConfig.DEBUG && AdDataUtils.getLjData().mosd.isNotBlank()) {
             newLogger(appComponent).logPurchase(
                 BigDecimal((adValue.valueMicros / 1000000.0).toString()),
@@ -209,6 +210,7 @@ object TTTDDUtils {
     }
 
     fun beforeLoadLink(adInformation: AdEasy): AdEasy {
+        Log.e("TAG", "beforeLoadLink: vvState=${vvState}---appComponent.vpn_ip=${appComponent.vpn_ip}", )
         if (vvState) {
             adInformation.loadIp = appComponent.vpn_ip
             adInformation.loadCity = appComponent.vpn_city
@@ -309,20 +311,21 @@ object TTTDDUtils {
         } else {
             getTbaDataJson(name)
         }
-        Log.e("TBA", "${name}-打点--Json--->${pointJson}")
+        log("${name}-打点--Json--->${pointJson}")
         try {
             postInformation(pointJson, object : NetUtils.Callback {
                 override fun onSuccess(response: String) {
-                    Log.e("TAG", "${name}-打点事件上报-成功->${response}")
+                    log( "${name}-打点事件上报-成功->${response}")
 
                 }
 
                 override fun onFailure(error: String) {
-                    Log.e("TAG", "${name}-打点事件上报-失败=$error")
+                    log( "${name}-打点事件上报-失败=$error")
+                    log("${name}-打点事件上报-失败=$error")
                 }
             })
         } catch (e: java.lang.Exception) {
-            Log.e("TAG", "${name}-打点事件上报-失败=$e")
+            log( "${name}-打点事件上报-失败=$e")
         }
     }
 
@@ -508,5 +511,9 @@ object TTTDDUtils {
         }
     }
 
-
+    fun log(msg: String) {
+        if(BuildConfig.DEBUG){
+            Log.e("TAG", msg)
+        }
+    }
 }

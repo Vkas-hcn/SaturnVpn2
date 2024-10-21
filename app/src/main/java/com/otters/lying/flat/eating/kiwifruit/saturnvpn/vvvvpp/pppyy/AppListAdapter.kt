@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.R
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.AAApp
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.AppInfo
+import com.otters.lying.flat.eating.kiwifruit.saturnvpn.tttttaa.TTTDDUtils.log
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.CenterUtils
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.app_pack_info
@@ -41,7 +42,7 @@ class AppListAdapter(private var appList: List<AppInfo>) :
         }
         holder.appState.setImageResource(imgData)
         holder.appState.setOnClickListener {
-            Log.e("TAG", "onBindViewHolder: ${appInfo.isSate}", )
+            log( "onBindViewHolder: ${appInfo.isSate}", )
             if(appInfo.isSate){
                 appInfo.isSate = false
                 CenterUtils.removeAppPack(appInfo.packageName)

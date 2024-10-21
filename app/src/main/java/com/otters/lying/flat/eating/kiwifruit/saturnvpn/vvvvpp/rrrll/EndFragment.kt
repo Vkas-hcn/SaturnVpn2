@@ -11,6 +11,7 @@ import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.BaseFragment
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.parseSX
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.databinding.FragmentEndBinding
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.tttttaa.TTTDDUtils
+import com.otters.lying.flat.eating.kiwifruit.saturnvpn.tttttaa.TTTDDUtils.log
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.AdDataUtils
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.click_now_vpn
@@ -54,7 +55,7 @@ class EndFragment : BaseFragment<FragmentEndBinding, EndViewModel>() {
             return
         }
         val connectNowVpn = AAApp.appComponent.connect_now_vpn.let { parseSX(it) }
-        Log.e("TAG", "updateUiWithServerData-end: ${AAApp.appComponent.connect_now_vpn}")
+        log( "updateUiWithServerData-end: ${AAApp.appComponent.connect_now_vpn}")
         if (connectNowVpn.best_data == true) {
             binding.tvName.text = "Fast Server"
         } else {
@@ -95,7 +96,7 @@ class EndFragment : BaseFragment<FragmentEndBinding, EndViewModel>() {
                 while (isActive) {
                     elapsedTime = System.currentTimeMillis() - startTime
                     if (elapsedTime >= 4000L) {
-                        Log.e("TAG", "连接超时")
+                        log( "连接超时")
                         nextFun()
                         binding.conLoadAd.isVisible = false
                         break

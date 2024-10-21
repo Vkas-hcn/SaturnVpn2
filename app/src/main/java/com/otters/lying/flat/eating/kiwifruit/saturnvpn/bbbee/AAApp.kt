@@ -19,6 +19,7 @@ import com.github.shadowsocks.Core
 import com.google.android.gms.ads.AdActivity
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.getIPInfo
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.tttttaa.TTTDDUtils
+import com.otters.lying.flat.eating.kiwifruit.saturnvpn.tttttaa.TTTDDUtils.log
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.AdManager
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.aaatt_state
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.install_up_state
@@ -52,18 +53,20 @@ class AAApp : Application() {
 
         var jumpToHomeType = "0"//0:shoudong,1:fast,2:item,
         var isCanHots = false
-        var adTbaActivityName=""
+        var adTbaActivityName = ""
     }
 
     override fun onCreate() {
         super.onCreate()
         appComponent = this
-        thisApplication=this
-        Log.e("TAG", "onCreate: Apppppppppp-app", )
+        thisApplication = this
         MMKV.initialize(this)
         saturnUtils =
             MMKV.mmkvWithID("saturnUtils", MMKV.MULTI_PROCESS_MODE)
         Core.init(this, MainActivity::class)
+        Core.stopService()
+        vvState = false
+        Log.e("TAG", "onCreate: App --${isMainProcess(this)}")
         if (isMainProcess(this)) {
             globalTimer = GlobalTimer()
             adManager = AdManager(this)
@@ -105,6 +108,7 @@ class AAApp : Application() {
             }
 
             override fun onActivityResumed(activity: Activity) {
+                // TODO Adjust
                 Adjust.onResume()
                 isInBackground = false
                 if (isCanHots) {
@@ -147,8 +151,8 @@ class AAApp : Application() {
                     when (p0) {
                         InstallReferrerClient.InstallReferrerResponse.OK -> {
                             referrerClient.installReferrer?.run {
-                                if(appComponent.install_up_state != "1"){
-                                    Log.e("TAG", "onInstallReferrerSetupFinished: ", )
+                                if (appComponent.install_up_state != "1") {
+                                    log("onInstallReferrerSetupFinished: ")
                                     TTTDDUtils.postInstallJson(this)
                                 }
                             }
@@ -163,17 +167,19 @@ class AAApp : Application() {
         }.onFailure { e ->
         }
     }
+
     private fun initAdJust() {
         Adjust.addSessionCallbackParameter(
             "customer_user_id",
             Settings.Secure.getString(appComponent.contentResolver, Settings.Secure.ANDROID_ID)
         )
+        // TODO Adjust id ,model
         val appToken = "ih2pm2dr3k74"
         val environment: String = AdjustConfig.ENVIRONMENT_SANDBOX
         val config = AdjustConfig(appComponent, appToken, environment)
         config.needsCost = true
         config.setOnAttributionChangedListener { attribution ->
-            Log.e("TAG", "adjust=${attribution}")
+            log("adjust=${attribution}")
             if (appComponent.aaatt_state != "1" && attribution.network.isNotEmpty() && attribution.network.contains(
                     "organic",
                     true

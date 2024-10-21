@@ -28,6 +28,7 @@ import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.AAApp
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.AdEasy
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.VpnAdBean
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.tttttaa.TTTDDUtils
+import com.otters.lying.flat.eating.kiwifruit.saturnvpn.tttttaa.TTTDDUtils.log
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.ad_c_num
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.ad_load_date
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.ad_s_num
@@ -70,7 +71,7 @@ class AdManager(private val application: Application) {
 
     fun loadAd(adType: String) {
         if (!AAApp.vvState) {
-            Log.e("TAG", "${adType}-vpn未连接-无法加载")
+            log( "${adType}-vpn未连接-无法加载")
             return
         }
         adAllData = AdDataUtils.getAdListData()
@@ -107,22 +108,22 @@ class AdManager(private val application: Application) {
             return
         }
         if (adCache.containsKey(adType) && !canRequestAd(adType)) {
-            Log.e("TAG", "已有$adType 广告，不在加载: ")
+            log( "已有$adType 广告，不在加载: ")
             return
         }
         if (!canLoadAd()) {
-            Log.e("TAG", "广告超限，不在加载")
+            log( "广告超限，不在加载")
             return
         }
         val blackData = AdDataUtils.getAdBlackData()
 
         if (blackData && (adType == AdDataUtils.home_type || adType == AdDataUtils.cont_type || adType == AdDataUtils.list_type || adType == AdDataUtils.end_type)) {
-            Log.e("TAG", "黑名单屏蔽$adType 广告，不在加载: ")
+            log( "黑名单屏蔽$adType 广告，不在加载: ")
             return
         }
 
         val adEasy = adList[index]
-        Log.e("TAG", "$adType 广告，开始加载: id=${adEasy.saturn_dd};we=${adEasy.saturn_kk}")
+        log( "$adType 广告，开始加载: id=${adEasy.saturn_dd};we=${adEasy.saturn_kk}")
         TTTDDUtils.moo14(adType)
         when (adEasy.saturn_tt) {
             "open" -> loadOpenAd(adType, adEasy, adList, index)
@@ -133,7 +134,7 @@ class AdManager(private val application: Application) {
 
     private fun loadOpenAd(adType: String, adEasy: AdEasy, adList: List<AdEasy>, index: Int) {
         adDataOpen = TTTDDUtils.beforeLoadLink(adEasy)
-        DataUtils.openTypeIp = adDataCont?.loadIp?:""
+        DataUtils.openTypeIp = adDataOpen?.loadIp?:""
         AppOpenAd.load(application, adEasy.saturn_dd, AdRequest.Builder().build(),
             AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,
             object : AppOpenAd.AppOpenAdLoadCallback() {
@@ -156,7 +157,7 @@ class AdManager(private val application: Application) {
                 }
 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                    Log.e("TAG", "${adType}广告加载失败=${loadAdError}")
+                    log( "${adType}广告加载失败=${loadAdError}")
                     loadAdFromList(adType, adList, index + 1)
                     TTTDDUtils.moo17(adType, loadAdError.message)
                 }
@@ -166,11 +167,10 @@ class AdManager(private val application: Application) {
     private fun loadNativeAd(adType: String, adEasy: AdEasy, adList: List<AdEasy>, index: Int) {
         if (adType == AdDataUtils.home_type) {
             adDataHome = TTTDDUtils.beforeLoadLink(adEasy)
-            DataUtils.homeTypeIp = adDataCont?.loadIp?:""
-
+            DataUtils.homeTypeIp = adDataHome?.loadIp?:""
         } else {
             adDataResult = TTTDDUtils.beforeLoadLink(adEasy)
-            DataUtils.resultTypeIp = adDataCont?.loadIp?:""
+            DataUtils.resultTypeIp = adDataResult?.loadIp?:""
         }
         val builder = NativeAdOptions.Builder()
         val adLoader = com.google.android.gms.ads.AdLoader.Builder(application, adEasy.saturn_dd)
@@ -185,14 +185,14 @@ class AdManager(private val application: Application) {
             .withNativeAdOptions(builder.build())
             .withAdListener(object : com.google.android.gms.ads.AdListener() {
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                    Log.e("TAG", "${adType}广告加载失败=${loadAdError}")
+                    log( "${adType}广告加载失败=${loadAdError}")
                     loadAdFromList(adType, adList, index + 1)
                     TTTDDUtils.moo17(adType, loadAdError.message)
                 }
 
                 override fun onAdClicked() {
                     super.onAdClicked()
-                    Log.e("TAG", "点击原生广告")
+                    log( "点击原生广告")
                     setCLickNumFun()
                 }
             })
@@ -215,19 +215,19 @@ class AdManager(private val application: Application) {
 
             AdDataUtils.list_type -> {
                 adDataList = TTTDDUtils.beforeLoadLink(adEasy)
-                DataUtils.listTypeIp = adDataCont?.loadIp?:""
+                DataUtils.listTypeIp = adDataList?.loadIp?:""
             }
 
             else -> {
                 adDataBa = TTTDDUtils.beforeLoadLink(adEasy)
-                DataUtils.endTypeIp = adDataCont?.loadIp?:""
+                DataUtils.endTypeIp = adDataBa?.loadIp?:""
             }
         }
 
         InterstitialAd.load(application, adEasy.saturn_dd, AdRequest.Builder().build(),
             object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(ad: InterstitialAd) {
-                    Log.e("TAG", "${adType}广告加载成功")
+                    log( "${adType}广告加载成功")
 
                     adCache[adType] = ad
                     adTimestamps[adType] = System.currentTimeMillis()
@@ -237,7 +237,7 @@ class AdManager(private val application: Application) {
                 }
 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                    Log.e("TAG", "${adType}广告加载失败=${loadAdError}")
+                    log( "${adType}广告加载失败=${loadAdError}")
                     loadAdFromList(adType, adList, index + 1)
                     TTTDDUtils.moo17(adType, loadAdError.message)
                 }
@@ -296,7 +296,7 @@ class AdManager(private val application: Application) {
                 is InterstitialAd -> {
                     ad.fullScreenContentCallback = object : FullScreenContentCallback() {
                         override fun onAdDismissedFullScreenContent() {
-                            Log.e("TAG", "关闭-${adType}广告: ")
+                            log( "关闭-${adType}广告: ")
                             qcAd(adType)
                             if (adType == AdDataUtils.home_type) {
                                 loadAd(adType)
@@ -320,7 +320,7 @@ class AdManager(private val application: Application) {
                     }
                     ad.show(activity)
                     setShowNumFun()
-                    Log.e("TAG", "展示-${adType}广告: ")
+                    log( "展示-${adType}广告: ")
                     adCache.remove(adType)
                     when (adType) {
                         AdDataUtils.cont_type -> {
@@ -394,7 +394,7 @@ class AdManager(private val application: Application) {
         } else {
             if (dateAfterDate(ad_load_date, formatDateNow())) {
                 ad_load_date = formatDateNow()
-                Log.e("TAG", "超限-qingling:")
+                log( "超限-qingling:")
                 ad_s_num = 0
                 ad_c_num = 0
             }
@@ -447,7 +447,7 @@ class AdManager(private val application: Application) {
         activity.lifecycleScope.launch(Dispatchers.Main) {
             ad.let { adData ->
                 val state = activity.lifecycle.currentState == Lifecycle.State.RESUMED
-                Log.e("TAG", "setDisplayHomeNativeAdFlash: ${state}")
+                log( "setDisplayHomeNativeAdFlash: ${state}")
                 if (state) {
                     val adView = activity.layoutInflater.inflate(
                         R.layout.layout_main,
@@ -546,7 +546,7 @@ class AdManager(private val application: Application) {
     fun getNatData(ad: NativeAd, adType: String) {
         if (adType == AdDataUtils.home_type) {
             ad.setOnPaidEventListener { adValue ->
-                Log.e("TAG", "原生广告 -${adType}，开始上报: ")
+                log( "原生广告 -${adType}，开始上报: ")
                 ad.responseInfo?.let {
                     TTTDDUtils.postAdData(
                         adValue,
@@ -559,7 +559,7 @@ class AdManager(private val application: Application) {
             }
         } else {
             ad.setOnPaidEventListener { adValue ->
-                Log.e("TAG", "原生广告 -${adType}，开始上报: ")
+                log( "原生广告 -${adType}，开始上报: ")
                 ad.responseInfo?.let {
                     TTTDDUtils.postAdData(
                         adValue,
@@ -588,7 +588,7 @@ class AdManager(private val application: Application) {
             }
         }
         ad.setOnPaidEventListener { adValue ->
-            Log.e("TAG", "插屏广告 -${adType}，开始上报: ")
+            log( "插屏广告 -${adType}，开始上报: ")
             TTTDDUtils.postAdData(
                 adValue,
                 ad.responseInfo,

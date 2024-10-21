@@ -54,7 +54,6 @@ class ProxyFragment : BaseFragment<FragmentProxyBinding, ProxyViewModel>(){
     }
     private fun setEditView() {
         binding.appEtApp.addTextChangedListener {
-            Log.e("TAG", "setEditView: ${it.toString()}", )
             showSearchWebItem(it.toString())
         }
     }

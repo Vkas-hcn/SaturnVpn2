@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 
 object DataUtils {
+    //TODO tba url
     val pp_url = "https://www.baidu.com/"
     const val vpn_url = "https://test.moonstarstable.com/zkgfP/PSWmxag/BeiM/"
     val tba_url = if (BuildConfig.DEBUG) {
@@ -21,7 +22,7 @@ object DataUtils {
     }
 
     private fun stringPreferenceKey(key: String) = stringPreferencesKey(key)
-
+    // TODO firebase key
     const val onlien_ad_key = "clap"
     const val onlien_pingbi_key = "evil"
 

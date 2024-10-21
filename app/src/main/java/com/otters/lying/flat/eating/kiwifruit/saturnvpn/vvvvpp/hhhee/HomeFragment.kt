@@ -28,6 +28,7 @@ import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.getIPInfo
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.showDueDialog
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.databinding.FragmentHomeBinding
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.tttttaa.TTTDDUtils
+import com.otters.lying.flat.eating.kiwifruit.saturnvpn.tttttaa.TTTDDUtils.log
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.tttttaa.TTTDDUtils.postPointData
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.AdDataUtils
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.CenterUtils
@@ -74,7 +75,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
             }
         activity?.let { connection.connect(it, this) }
         DataStore.publicStore.registerChangeListener(this)
-        Log.e("TAG", "home ----init-----: ")
+        log( "home ----init-----: ")
         viewModel.initializeServerData(binding) {
             activity?.let {
                 jumpLaMore = true
@@ -96,7 +97,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
         binding.tvServerList.setOnClickListener {
             navigateTo(R.id.action_homeFragment_to_moreFragment) {
                 // 从 B 返回到 A 后执行的代码
-                Log.e("TAG", "Returned from B to A, executing callback...")
+                log( "Returned from B to A, executing callback...")
             }
 
         }
@@ -130,7 +131,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
         activity?.let { showDueDialog(it) }
         showTimeLi()
         showHomeAd()
-        Log.e("TAG", "setupViews: showHomeAd", )
+        log( "setupViews: showHomeAd", )
     }
 
 
@@ -285,7 +286,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
             if (AAApp.vvState) {
                 showConnectAd(AdDataUtils.getConnectTime().second)
             } else {
-                Log.e("TAG", "vpn连接: =${nowClickState}")
+                log( "vpn连接: =${nowClickState}")
                 AAApp.appComponent.vpn_ip = DataUtils.nowLoadIpData
                 AAApp.appComponent.vpn_city = DataUtils.nowLoadCityData
                 Core.startService()
@@ -295,13 +296,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
     }
 
     override fun stateChanged(state: BaseService.State, profileName: String?, msg: String?) {
-        Log.e("TAG", "stateChanged: ${state.name}")
+        log( "stateChanged: ${state.name}")
         if (state.name == "Connected") {
             AAApp.vvState = true
             binding.linSpeed.isVisible = true
             if (showAd) {
                 showAd = false
-                Log.e("TAG", "vpn连接成功")
+                log( "vpn连接成功")
                 showConnectAd(AdDataUtils.getConnectTime().first)
                 AAApp.adManager?.loadAd(AdDataUtils.end_type)
                 AAApp.adManager?.loadAd(AdDataUtils.result_type)
@@ -314,16 +315,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
         if (state.name == "Stopped") {
             AAApp.vvState = false
             binding.linSpeed.isVisible = false
-            Log.e("TAG", "ss vpn断开成功")
+            log( "ss vpn断开成功")
             setTypeService(0)
         }
     }
 
     override fun onServiceConnected(service: IShadowsocksService) {
         if (!jumpLaMore) {
-            Log.e("TAG", "onServiceConnected: ${service.state}")
+            log( "onServiceConnected: ${service.state}")
             val state = BaseService.State.values()[service.state]
-            Log.e("TAG", "ss-初始化: ${state.name}")
+            log( "ss-初始化: ${state.name}")
             if (state.name == "Connected") {
                 binding.linSpeed.isVisible = true
                 setSsVpnState(true)
@@ -444,7 +445,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
                 while (isActive) {
                     elapsedTime = System.currentTimeMillis() - startTime
                     if (elapsedTime >= (connectTimeData * 1000)) {
-                        Log.e("TAG", "连接超时")
+                        log( "连接超时")
                         showFinishAd()
                         break
                     }
@@ -470,7 +471,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
     }
 
     private fun showFinishAd() {
-        Log.e("TAG", "vpn连接-showFinishAd: $nowClickState")
+        log( "vpn连接-showFinishAd: $nowClickState")
         if (nowClickState == "0") {
             connectFinish()
             AAApp.adManager?.loadAd(AdDataUtils.cont_type)
@@ -489,7 +490,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
     }
 
     private fun disConnectFinish() {
-        Log.e("TAG", "关闭广告断开vpn: ")
+        log( "关闭广告断开vpn: ")
         Core.stopService()
         setTypeService(0)
         pageToRePage()
@@ -528,7 +529,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(),
     private fun showHomeAd() {
         val blackData = AdDataUtils.getAdBlackData()
         if (blackData) {
-            Log.e("TAG", "黑名单屏蔽home_saturn广告")
+            log( "黑名单屏蔽home_saturn广告")
             binding.adLayout.isVisible = false
             return
         } else if (!AAApp.vvState) {

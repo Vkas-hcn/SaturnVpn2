@@ -11,6 +11,7 @@ import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.AAApp
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.SX
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.parseJson
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.toJson
+import com.otters.lying.flat.eating.kiwifruit.saturnvpn.tttttaa.TTTDDUtils.log
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.blackData
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.fast_now_vpn
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.online_vpn_data
@@ -39,6 +40,7 @@ object NetUtils {
 
     @SuppressLint("HardwareIds")
     fun blackData(context: Context): Map<String, Any> {
+        // TODO hmd package name
         return mapOf(
             "acme" to "com.selene.moon.star.link.stable",
             "tarnish" to "intrigue",
@@ -51,18 +53,18 @@ object NetUtils {
         if (AAApp.appComponent.blackData.isNotEmpty()) {
             return
         }
-        Log.e("TAG", "Black--URL: ${AAApp.appComponent.blackData}")
+        log( "Black--URL: ${AAApp.appComponent.blackData}")
         getMapData(
             "https://quince.moonstarstable.com/sci/aromatic/cork",
             blackData(context),
             onNext = {
-                Log.e("TAG", "The blacklist request is successful：$it")
+                log( "The blacklist request is successful：$it")
                 AAApp.appComponent.blackData = it
             },
             onError = {
                 GlobalScope.launch(Dispatchers.IO) {
                     delay(10000)
-                    Log.e("TAG", "The blacklist request failed：$it")
+                    log( "The blacklist request failed：$it")
                     getBlackList(context)
                 }
             })
@@ -83,13 +85,13 @@ object NetUtils {
             DataUtils.vpn_url,
             onSuccess = {
                 val result = processString(it)
-                Log.e("TAG", "getVpnNetData-onSuccess:$result")
+                log( "getVpnNetData-onSuccess:$result")
                 if (result == null) return@getServiceData
                 AAApp.appComponent.online_vpn_data = (result ?: "").toString()
                 getFastVpnData(result)
             },
             onError = {
-                Log.e("TAG", "getVpnNetData -onError: $it")
+                log( "getVpnNetData -onError: $it")
             }
         )
     }

@@ -22,6 +22,7 @@ import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.showDueDialog
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbnn.toJson
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.databinding.FragmentHomeBinding
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.databinding.FragmentMoreBinding
+import com.otters.lying.flat.eating.kiwifruit.saturnvpn.tttttaa.TTTDDUtils.log
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.CenterUtils.getSaturnImage
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.click_now_vpn
@@ -71,7 +72,7 @@ class HomeViewModel : BaseViewModel() {
 
     private fun updateUiWithServerData(binding: FragmentHomeBinding) {
         val connectNowVpn = AAApp.appComponent.connect_now_vpn.let { parseSX(it) }
-        Log.e("TAG", "updateUiWithServerData: ${AAApp.appComponent.connect_now_vpn}")
+        log( "updateUiWithServerData: ${AAApp.appComponent.connect_now_vpn}")
         if (connectNowVpn.best_data) {
             binding.imgFast.setImageResource("Fast Server".getSaturnImage())
             binding.tvFast.text = "Fast Server"
@@ -82,7 +83,7 @@ class HomeViewModel : BaseViewModel() {
     }
 
     private fun setSkServerData(profile: Profile, bestData: SX): Profile {
-        Log.e("TAG", "setSkServerData: ip=${bestData.CwDwOnOtuQ}")
+        log( "setSkServerData: ip=${bestData.CwDwOnOtuQ}")
         DataUtils.nowLoadIpData = bestData.CwDwOnOtuQ
         DataUtils.nowLoadCityData= bestData.LMfccpX
         AAApp.appComponent.connect_now_vpn = bestData.toJson()

@@ -19,6 +19,7 @@ import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.AAApp.Companion.ad
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.BaseFragment
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.databinding.FragmentStartBinding
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.tttttaa.TTTDDUtils
+import com.otters.lying.flat.eating.kiwifruit.saturnvpn.tttttaa.TTTDDUtils.log
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.AdDataUtils
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.AdDataUtils.getLjData
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.cmpData
@@ -56,7 +57,7 @@ class StartFragment : BaseFragment<FragmentStartBinding, StartViewModel>() {
             adManager?.loadAd(AdDataUtils.cont_type)
             adManager?.loadAd(AdDataUtils.home_type)
         }
-        Log.e("TAG", "onCreate: Apppppppppp-start=${AAApp.vvState}", )
+        log( "onCreate: Apppppppppp-start=${AAApp.vvState}", )
     }
 
     override fun observeViewModel() {
@@ -91,11 +92,11 @@ class StartFragment : BaseFragment<FragmentStartBinding, StartViewModel>() {
                     loadAdFun()
                 } else {
                     attemptCount++
-                    Log.e("TAG", "检测远程数据中。。。")
+                    log( "检测远程数据中。。。")
                     if (attemptCount < 8) { // 4000ms / 500ms = 8 attempts
                         handler.postDelayed(this, 500)
                     } else {
-                        Log.e("TAG", "检测远程数据超时。。。")
+                        log( "检测远程数据超时。。。")
                         loadAdFun()
                         initFaceBook()
                     }
@@ -106,8 +107,9 @@ class StartFragment : BaseFragment<FragmentStartBinding, StartViewModel>() {
     }
     private fun initFaceBook() {
         val bean = getLjData()
+        // TODO fb id 1
         if(bean.mosd.isBlank()){return}
-        Log.e("TAG", "initFaceBook: ${bean.mosd}")
+        log( "initFaceBook: ${bean.mosd}")
         FacebookSdk.setApplicationId(bean.mosd)
         FacebookSdk.sdkInitialize(AAApp.appComponent)
         AppEventsLogger.activateApp(AAApp.thisApplication)
@@ -123,19 +125,19 @@ class StartFragment : BaseFragment<FragmentStartBinding, StartViewModel>() {
         val handler = Handler(Looper.getMainLooper())
         val checkConditionAndPreloadAd = object : Runnable {
             override fun run() {
-                Log.e("TAG", "等待OPEN广告中。。。${adShown} ")
+                log( "等待OPEN广告中。。。${adShown} ")
                 if (adShown) return
                 attemptCount++
                 if (attemptCount < 20) {
                     handler.postDelayed(this, 500)
                 } else {
                     adShown = true
-                    Log.e("TAG", "OPEN广告超时。。。 ")
+                    log( "OPEN广告超时。。。 ")
                     jumpFun()
                 }
                 if (adManager?.canShowAd(AdDataUtils.open_type) == AdDataUtils.ad_show) {
                     adShown = true
-                    Log.e("TAG", "准备OPEN广告中。。。${adShown} ")
+                    log( "准备OPEN广告中。。。${adShown} ")
                     adManager?.showAd(
                         AdDataUtils.open_type,
                         requireActivity(),
@@ -158,19 +160,19 @@ class StartFragment : BaseFragment<FragmentStartBinding, StartViewModel>() {
         val handler = Handler(Looper.getMainLooper())
         val checkConditionAndPreloadAd = object : Runnable {
             override fun run() {
-                Log.e("TAG", "等待OPEN广告中。。。${adShown} ")
+                log( "等待OPEN广告中。。。${adShown} ")
                 if (adShown || !isAdded) return // 确保 Fragment 已附加
                 attemptCount++
                 if (attemptCount < 10) {
                     handler.postDelayed(this, 500)
                 } else {
                     adShown = true
-                    Log.e("TAG", "OPEN广告超时。。。 ")
+                    log( "OPEN广告超时。。。 ")
                     jumpFun()
                 }
                 if (adManager?.canShowAd(AdDataUtils.open_type) == AdDataUtils.ad_show) {
                     adShown = true
-                    Log.e("TAG", "准备OPEN广告中。。。${adShown} ")
+                    log( "准备OPEN广告中。。。${adShown} ")
                     activity?.let { activity ->
                         adManager?.showAd(AdDataUtils.open_type, activity, this@StartFragment) {
                             jumpFun()

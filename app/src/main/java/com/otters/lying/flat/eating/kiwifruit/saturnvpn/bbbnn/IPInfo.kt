@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.bbbee.AAApp
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.tttttaa.TTTDDUtils
+import com.otters.lying.flat.eating.kiwifruit.saturnvpn.tttttaa.TTTDDUtils.log
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.ben_ip
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.code_con
 import com.otters.lying.flat.eating.kiwifruit.saturnvpn.uuuuss.DataUtils.ip_con
@@ -55,7 +56,7 @@ fun fetchIPInfo(url: String): String? {
             null
         }
     } catch (e: Exception) {
-        Log.e("TAG", "Error fetching IP info: ${e.message}")
+        log( "Error fetching IP info: ${e.message}")
         e.printStackTrace()
         null
     }
@@ -123,6 +124,7 @@ fun shouldIntercept(context: Context): Boolean {
 }
 
 fun showDueDialog(context: Context): Boolean {
+    // TODO ip info
     if (shouldIntercept(context)) {
         TTTDDUtils.postPointData("moo3","seru",context.ip_con)
         AlertDialog.Builder(context).apply {

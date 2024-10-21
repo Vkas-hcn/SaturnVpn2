@@ -100,7 +100,7 @@ object AdDataUtils {
     const val ad_jump_over = "ad_jump_over"
     const val ad_show = "ad_show"
 
-
+// TODO ad json
     const val adJson = """
         {
   "saturn_esc": 20,
@@ -141,7 +141,7 @@ object AdDataUtils {
     {
       "saturn_tt": "interstitial",
       "saturn_xx": "admob",
-      "saturn_dd": "ca-app-pub-3940256099942544/1033173712x",
+      "saturn_dd": "ca-app-pub-3940256099942544/1033173712",
       "saturn_kk": 1
     }
   ],
@@ -155,6 +155,7 @@ object AdDataUtils {
   ]
 }
     """
+    // TODO ping json
     const val dataPingJson = """
         {
   "soon": 1,

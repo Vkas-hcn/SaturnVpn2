@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    // TODO firebase
 }
 
 android {
@@ -8,6 +9,7 @@ android {
     compileSdk 34
 
     defaultConfig {
+        //TODO package name
         applicationId "com.otters.lying.flat.eating.kiwifruit.saturnvpn"
         minSdk 24
         targetSdk 34
